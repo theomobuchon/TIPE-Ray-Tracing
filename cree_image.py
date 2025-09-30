@@ -1,7 +1,7 @@
 
 
 
-im = open("P:/Documents/TIPE/python_ver/restultat.ppm", "w")
+im = open(f"{__file__}/restultat.ppm", "w")
 
 image_height = 256
 image_width = 256
