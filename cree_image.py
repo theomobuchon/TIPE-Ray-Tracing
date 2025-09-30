@@ -1,7 +1,7 @@
+import os
 
 
-
-im = open(f"{__file__}/restultat.ppm", "w")
+im = open(f"{os.getcwd()}/restultat.ppm", "w")
 
 image_height = 256
 image_width = 256
