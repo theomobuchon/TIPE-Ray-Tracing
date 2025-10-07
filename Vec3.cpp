@@ -1,0 +1,130 @@
+#include "Vec3.hpp"
+#include <iostream>
+#include <cmath>
+
+using namespace std;
+
+Vec3::Vec3(): m_x(0.0), m_y(0.0), m_z(0.0) {
+
+};
+
+Vec3::Vec3(const double x, const double y, const double z): m_x(x), m_y(y), m_z(z) {
+
+};
+
+Vec3 &Vec3::operator+=(const Vec3 &other) {
+    m_x += other.m_x;
+    m_y += other.m_y;
+    m_z += other.m_z;
+
+    return *this;
+}
+
+Vec3 &Vec3::operator-=(const Vec3 &other) {
+    m_x -= other.m_x;
+    m_y -= other.m_y;
+    m_z -= other.m_z;
+
+    return *this;
+}
+
+Vec3 &Vec3::operator*=(double lamb) {
+    m_x *= lamb;
+    m_y *= lamb;
+    m_z *= lamb;
+
+    return *this;
+}
+
+Vec3 &Vec3::operator/=(double lamb) {
+    if (lamb == 0) {
+        cout << "Erreur : division d'un vec3 par 0" << endl;
+    }
+    m_x /= lamb;
+    m_y /= lamb;
+    m_z /= lamb;
+
+    return *this;
+}
+
+Vec3 &Vec3::operator=(const Vec3 &other) = default;
+
+bool Vec3::operator==(const Vec3 &other) const {
+    return m_x == other.m_x && m_y == other.m_y && m_z == other.m_z;
+}
+
+double Vec3::norme() const {
+    return sqrt(m_x*m_x + m_y*m_y + m_z*m_z);
+}
+
+double Vec3::p_scal(const Vec3 &e) const {
+    return m_x*e.m_x + m_y*e.m_y + m_z*e.m_z;
+}
+
+void Vec3::p_vect(const Vec3 &e) {
+    const double x = m_y*e.m_z - e.m_y*m_z;
+    const double y = e.m_x*m_z - m_x*e.m_z;
+    const double z = m_x*e.m_y - e.m_x*m_y;
+    m_x = x;
+    m_y = y;
+    m_z = z;
+}
+
+void Vec3::afficher(ostream &os) const {
+    os << "(" << m_x << ", " << m_y << ", " << m_z << ")";
+}
+
+void Vec3::normalize() {
+    const double n = this -> norme();
+    *this /= n;
+}
+
+Vec3 operator+(const Vec3 &e1, const Vec3 &e2) {
+    Vec3 e3(e1);
+    e3 += e2;
+    return e3;
+}
+
+Vec3 operator-(const Vec3 &e1, const Vec3 &e2) {
+    Vec3 e3(e1);
+    e3 -= e2;
+    return e3;
+}
+
+Vec3 operator*(const Vec3 &e, const double lamb) {
+    Vec3 e2(e);
+    e2 *= lamb;
+    return e2;
+}
+
+Vec3 operator*(const double lamb, const Vec3 &e) {
+    return e*lamb;
+}
+
+Vec3 operator/(const Vec3 &e, const double lamb) {
+    Vec3 f(e);
+    f /= lamb;
+    return f;
+}
+
+double p_scal(const Vec3 &e1, const Vec3 &e2) {
+    return e1.p_scal(e2);
+}
+
+Vec3 p_vect(const Vec3 &e1, const Vec3 &e2) {
+    Vec3 e3(e1);
+    e3.p_vect(e2);
+    return e3;
+}
+
+Vec3 normalisate(const Vec3 &e) {
+    Vec3 e2(e);
+    e2.normalize();
+    return e2;
+}
+
+ostream &operator<<(ostream &os, const Vec3 &e) {
+    e.afficher(os);
+    return os;
+}
+
