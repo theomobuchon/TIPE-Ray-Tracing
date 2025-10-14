@@ -6,6 +6,9 @@ class Vect3:
     def __add__(self, v):
         v2 = Vect3(self.x + v.x, self.y + v.y, self.z + v.z)
         return v2
+    def __sub__(self, v):
+        v2 = Vect3(self.x - v.x, self.y - v.y, self.z - v.z)
+        return v2
     def __mul__(self, l : float):
         v2 = Vect3(l*self.x, l*self.y, l*self.z)
         return v2
