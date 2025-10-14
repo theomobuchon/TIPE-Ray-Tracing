@@ -5,3 +5,5 @@ class Rayon:
         self.ori = ori
         self.dir = dir
     
+def point_du_rayon(t, rayon: Rayon):
+    return rayon.ori + rayon.dir*t
