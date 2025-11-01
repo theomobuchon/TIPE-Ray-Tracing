@@ -53,8 +53,12 @@ bool Vec3::operator==(const Vec3 &other) const {
     return m_x == other.m_x && m_y == other.m_y && m_z == other.m_z;
 }
 
-double Vec3::norme() const {
-    return sqrt(m_x*m_x + m_y*m_y + m_z*m_z);
+double Vec3::squaredNorm() const {
+    return m_x * m_x + m_y * m_y + m_z * m_z;
+}
+
+double Vec3::norm() const {
+    return sqrt(squaredNorm());
 }
 
 double Vec3::p_scal(const Vec3 &e) const {
@@ -75,8 +79,20 @@ void Vec3::afficher(ostream &os) const {
 }
 
 void Vec3::normalize() {
-    const double n = this -> norme();
+    const double n = this -> norm();
     *this /= n;
+}
+
+double Vec3::x() const {
+    return m_x;
+}
+
+double Vec3::y() const {
+    return m_y;
+}
+
+double Vec3::z() const {
+    return m_z;
 }
 
 Vec3 operator+(const Vec3 &e1, const Vec3 &e2) {
@@ -128,3 +144,9 @@ ostream &operator<<(ostream &os, const Vec3 &e) {
     return os;
 }
 
+void write_color(std::ofstream &fout, const Color &color) {
+    const int rbyte = static_cast<int>(255.999 * color.x());
+    const int gbyte = static_cast<int>(255.999 * color.y());
+    const int bbyte = static_cast<int>(255.999 * color.z());
+    fout << rbyte << " " << gbyte << " " << bbyte << std::endl;
+}
