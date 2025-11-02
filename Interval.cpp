@@ -40,3 +40,9 @@ bool Interval::surrounds(const double value) const {
     return m_min < value && value < m_max;
 }
 
+double Interval::clamp(const double value) const {
+    if (value < m_min) return m_min;
+    if (value > m_max) return m_max;
+    return value;
+}
+

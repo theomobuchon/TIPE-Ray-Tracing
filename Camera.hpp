@@ -12,17 +12,21 @@ class Camera {
 public:
     Camera(double ratio, int im_width, double focal_length);
     Camera(double ratio, int im_width, double focal_length, const Point3 &center);
+    Camera(double ratio, int im_width, double focal_length, const Point3 &center, int sample_per_pixel);
     Camera &operator=(const Camera &camera);
     void render(ofstream &fout, const Hittable &world);
-    [[nodiscard]] Ray getRay(int x, int y) const;
 
     Point3 m_center;
     double m_ratio;
     int m_im_width;
+    bool antialiasing;
+    int m_sample_per_pixel;
 
 protected:
     void initialize();
-    [[nodiscard]] static Color ray_color(const Ray &ray, const Hittable &world) ;
+    [[nodiscard]] static Color ray_color(const Ray &ray, const Hittable &world);
+    [[nodiscard]] Ray getRay(int x, int y) const;
+    [[nodiscard]] static Vec3 sample_square() ;
 
     int m_im_height{};
     double m_viewport_width{};

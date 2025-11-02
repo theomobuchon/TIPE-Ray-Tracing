@@ -1,6 +1,7 @@
 #include "Vec3.hpp"
 #include <iostream>
 #include <cmath>
+#include "Interval.hpp"
 
 using namespace std;
 
@@ -145,8 +146,9 @@ ostream &operator<<(ostream &os, const Vec3 &e) {
 }
 
 void write_color(std::ofstream &fout, const Color &color) {
-    const int rbyte = static_cast<int>(255.999 * color.x());
-    const int gbyte = static_cast<int>(255.999 * color.y());
-    const int bbyte = static_cast<int>(255.999 * color.z());
+    static const Interval intensity(0., 0.999);
+    const int rbyte = static_cast<int>(256 * intensity.clamp(color.x()));
+    const int gbyte = static_cast<int>(256 * intensity.clamp(color.y()));
+    const int bbyte = static_cast<int>(256 * intensity.clamp(color.z()));
     fout << rbyte << " " << gbyte << " " << bbyte << std::endl;
 }

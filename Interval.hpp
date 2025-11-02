@@ -14,6 +14,7 @@ public:
     [[nodiscard]]double max() const;
     [[nodiscard]] bool contains(double value) const;
     [[nodiscard]] bool surrounds(double value) const;
+    [[nodiscard]] double clamp(double value) const;
     [[nodiscard]] double size() const;
 
     static const Interval empty, universe;

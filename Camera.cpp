@@ -6,9 +6,11 @@
 
 using namespace std;
 
-Camera::Camera(const double ratio, const int im_width, const double focal_length): m_ratio(ratio), m_im_width(im_width), m_focal_length(focal_length), m_center(Point3(0, 0, 0)) {}
+Camera::Camera(const double ratio, const int im_width, const double focal_length): m_center(Point3(0, 0, 0)), m_ratio(ratio), m_im_width(im_width), antialiasing(true), m_sample_per_pixel(10), m_focal_length(focal_length) {}
 
-Camera::Camera(const double ratio, const int im_width, const double focal_length, const Point3 &center): m_ratio(ratio), m_im_width(im_width), m_focal_length(focal_length), m_center(center) {}
+Camera::Camera(const double ratio, const int im_width, const double focal_length, const Point3 &center): m_center(center), m_ratio(ratio), m_im_width(im_width), antialiasing(true), m_sample_per_pixel(10), m_focal_length(focal_length) {}
+
+Camera::Camera(const double ratio, const int im_width, const double focal_length, const Point3 &center, const int sample_per_pixel): m_center(center), m_ratio(ratio), m_im_width(im_width), antialiasing(true), m_sample_per_pixel(sample_per_pixel), m_focal_length(focal_length) {}
 
 void Camera::initialize() {
     m_im_height = static_cast<int>(m_im_width / m_ratio);
@@ -35,7 +37,9 @@ Color Camera::ray_color(const Ray &ray, const Hittable &world) {
 Camera &Camera::operator=(const Camera &camera) = default;
 
 Ray Camera::getRay(const int x, const int y) const {
-    return {m_center, m_pix00 + x*m_du_viewport + y*m_dv_viewport - m_center};
+    auto offset = antialiasing ? sample_square() : Vec3(0, 0, 0);
+    auto pixel_targeted = m_pix00 + (x + offset.x()) * m_du_viewport + (y + offset.y()) * m_dv_viewport;
+    return {m_center,  pixel_targeted- m_center};
 }
 
 void Camera::render(ofstream &fout, const Hittable &world) {
@@ -44,10 +48,23 @@ void Camera::render(ofstream &fout, const Hittable &world) {
 
     for (int j = 0; j < m_im_height; j++) {
         for (int i = 0; i < m_im_width; i++) {
-            Ray ray = getRay(i, j);
-            Color pixel_color = ray_color(ray, world);
-            write_color(fout, pixel_color);
+            Color pixel_color;
+            if (antialiasing) {
+                for (int sample = 0; sample < m_sample_per_pixel; sample++) {
+                    Ray ray = getRay(i, j);
+                    pixel_color += ray_color(ray, world);
+                }
+                write_color(fout, pixel_color / m_sample_per_pixel);
+            }
+            else {
+                Ray ray = getRay(i, j);
+                pixel_color = ray_color(ray, world);
+                write_color(fout, pixel_color);
+            }
         }
     }
 }
 
+Vec3 Camera::sample_square() {
+    return {random_double() - 0.5, random_double() - 0.5, 0};
+}
