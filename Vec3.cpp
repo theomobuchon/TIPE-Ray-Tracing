@@ -2,6 +2,7 @@
 #include <iostream>
 #include <cmath>
 #include "Interval.hpp"
+#include "Raytracer.hpp"
 
 using namespace std;
 
@@ -54,6 +55,10 @@ bool Vec3::operator==(const Vec3 &other) const {
     return m_x == other.m_x && m_y == other.m_y && m_z == other.m_z;
 }
 
+Vec3 Vec3::operator-() const {
+    return -1*(*this);
+}
+
 double Vec3::squaredNorm() const {
     return m_x * m_x + m_y * m_y + m_z * m_z;
 }
@@ -94,6 +99,14 @@ double Vec3::y() const {
 
 double Vec3::z() const {
     return m_z;
+}
+
+Vec3 Vec3::random() {
+    return {random_double(), random_double(), random_double()};
+}
+
+Vec3 Vec3::random(double min, double max) {
+    return {random_double(min, max), random_double(min, max), random_double(min, max)};
 }
 
 Vec3 operator+(const Vec3 &e1, const Vec3 &e2) {
@@ -147,8 +160,29 @@ ostream &operator<<(ostream &os, const Vec3 &e) {
 
 void write_color(std::ofstream &fout, const Color &color) {
     static const Interval intensity(0., 0.999);
-    const int rbyte = static_cast<int>(256 * intensity.clamp(color.x()));
-    const int gbyte = static_cast<int>(256 * intensity.clamp(color.y()));
-    const int bbyte = static_cast<int>(256 * intensity.clamp(color.z()));
+    const double x = linear_to_gamma(color.x());
+    const double y = linear_to_gamma(color.y());
+    const double z = linear_to_gamma(color.z());
+    const int rbyte = static_cast<int>(256 * intensity.clamp(x));
+    const int gbyte = static_cast<int>(256 * intensity.clamp(y));
+    const int bbyte = static_cast<int>(256 * intensity.clamp(z));
     fout << rbyte << " " << gbyte << " " << bbyte << std::endl;
+}
+
+inline Vec3 random_in_unit_sphere() {
+    auto x = random_double(-1, 1);
+    const auto y_max = sqrt(1 - x*x);
+    auto y = random_double(-y_max, +y_max);
+    auto z = sqrt(Interval(0, 1).clamp(1 - x*x - y*y));
+    return {x, y, z};
+}
+
+inline Vec3 random_on_hemisphere(const Vec3 &normal) {
+    Vec3 vec_in_unit_sphere = random_in_unit_sphere();
+    if (p_scal(normal, vec_in_unit_sphere) > 0) return vec_in_unit_sphere;
+    return -vec_in_unit_sphere;
+}
+
+inline double linear_to_gamma(double linear_component) {
+    return sqrt(linear_component);
 }

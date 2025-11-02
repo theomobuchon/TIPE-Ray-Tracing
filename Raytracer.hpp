@@ -5,17 +5,13 @@
 #ifndef TIPE_RAY_TRACING_RAYTRACER_HPP
 #define TIPE_RAY_TRACING_RAYTRACER_HPP
 
-#include "Vec3.cpp"
-#include "Ray.cpp"
-#include "Interval.cpp"
 #include <fstream>
 #include <cmath>
 #include <random>
-#include <ctime>
-#include <memory>
 
 using namespace std;
 
+constexpr double infinite = std::numeric_limits<double>::infinity();
 constexpr double pi = 3.1415926535897932385;
 
 inline double degrees_to_radians(double degree) {

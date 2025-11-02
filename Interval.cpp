@@ -3,9 +3,7 @@
 //
 
 #include "Interval.hpp"
-#include <limits>
-
-constexpr double infinite = std::numeric_limits<double>::infinity();
+#include "Raytracer.hpp"
 
 const Interval Interval::empty = Interval(+infinite, -infinite);
 const Interval Interval::universe = Interval(-infinite, +infinite);

@@ -19,12 +19,12 @@ public:
     Point3 m_center;
     double m_ratio;
     int m_im_width;
-    bool antialiasing;
     int m_sample_per_pixel;
+    int m_max_depth;
 
 protected:
     void initialize();
-    [[nodiscard]] static Color ray_color(const Ray &ray, const Hittable &world);
+    [[nodiscard]] static Color ray_color(const Ray &ray, int depth, const Hittable &world);
     [[nodiscard]] Ray getRay(int x, int y) const;
     [[nodiscard]] static Vec3 sample_square() ;
 

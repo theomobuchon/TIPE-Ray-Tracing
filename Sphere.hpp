@@ -4,8 +4,11 @@
 
 #ifndef TIPE_RAY_TRACING_SPHERE_HPP
 #define TIPE_RAY_TRACING_SPHERE_HPP
-#include "Raytracer.hpp"
+
 #include "Hittable.hpp"
+#include "Vec3.hpp"
+#include "Ray.hpp"
+#include "Interval.hpp"
 
 
 class Sphere: public Hittable {

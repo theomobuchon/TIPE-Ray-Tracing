@@ -3,14 +3,21 @@
 //
 
 #include "Camera.hpp"
+#include "Interval.cpp"
 
 using namespace std;
 
-Camera::Camera(const double ratio, const int im_width, const double focal_length): m_center(Point3(0, 0, 0)), m_ratio(ratio), m_im_width(im_width), antialiasing(true), m_sample_per_pixel(10), m_focal_length(focal_length) {}
+Camera::Camera(const double ratio, const int im_width, const double focal_length): m_center(Point3(0, 0, 0)), m_ratio(ratio), m_im_width(im_width), m_sample_per_pixel(10), m_max_depth(10), m_focal_length(focal_length) {
+    initialize();
+}
 
-Camera::Camera(const double ratio, const int im_width, const double focal_length, const Point3 &center): m_center(center), m_ratio(ratio), m_im_width(im_width), antialiasing(true), m_sample_per_pixel(10), m_focal_length(focal_length) {}
+Camera::Camera(const double ratio, const int im_width, const double focal_length, const Point3 &center): m_center(center), m_ratio(ratio), m_im_width(im_width), m_sample_per_pixel(10), m_max_depth(10), m_focal_length(focal_length) {
+    initialize();
+}
 
-Camera::Camera(const double ratio, const int im_width, const double focal_length, const Point3 &center, const int sample_per_pixel): m_center(center), m_ratio(ratio), m_im_width(im_width), antialiasing(true), m_sample_per_pixel(sample_per_pixel), m_focal_length(focal_length) {}
+Camera::Camera(const double ratio, const int im_width, const double focal_length, const Point3 &center, const int sample_per_pixel): m_center(center), m_ratio(ratio), m_im_width(im_width), m_sample_per_pixel(sample_per_pixel), m_max_depth(10), m_focal_length(focal_length) {
+    initialize();
+}
 
 void Camera::initialize() {
     m_im_height = static_cast<int>(m_im_width / m_ratio);
@@ -24,9 +31,12 @@ void Camera::initialize() {
     m_pix00 = m_origin_viewport + 0.5*m_du_viewport + 0.5*m_dv_viewport;
 }
 
-Color Camera::ray_color(const Ray &ray, const Hittable &world) {
-    if (Hit_record rec; world.hit(ray, Interval(0., infinite), rec)) {
-        return 0.5 * (rec.m_normal + Color(1., 1., 1.));
+Color Camera::ray_color(const Ray &ray, const int depth, const Hittable &world) {
+    if (depth <= 0) return {0, 0, 0};
+
+    if (Hit_record rec; world.hit(ray, Interval(0.001, infinite), rec)) {
+        const Vec3 direction = rec.m_normal + random_in_unit_sphere();
+        return 0.5 * ray_color(Ray(rec.m_p, direction), depth - 1, world);
     }
 
     const Vec3 unit_direction = normalisate(ray.direction());
@@ -37,9 +47,9 @@ Color Camera::ray_color(const Ray &ray, const Hittable &world) {
 Camera &Camera::operator=(const Camera &camera) = default;
 
 Ray Camera::getRay(const int x, const int y) const {
-    auto offset = antialiasing ? sample_square() : Vec3(0, 0, 0);
-    auto pixel_targeted = m_pix00 + (x + offset.x()) * m_du_viewport + (y + offset.y()) * m_dv_viewport;
-    return {m_center,  pixel_targeted- m_center};
+    const auto offset = sample_square();
+    const auto pixel_targeted = m_pix00 + (x + offset.x()) * m_du_viewport + (y + offset.y()) * m_dv_viewport;
+    return {m_center,  pixel_targeted - m_center};
 }
 
 void Camera::render(ofstream &fout, const Hittable &world) {
@@ -49,18 +59,11 @@ void Camera::render(ofstream &fout, const Hittable &world) {
     for (int j = 0; j < m_im_height; j++) {
         for (int i = 0; i < m_im_width; i++) {
             Color pixel_color;
-            if (antialiasing) {
-                for (int sample = 0; sample < m_sample_per_pixel; sample++) {
-                    Ray ray = getRay(i, j);
-                    pixel_color += ray_color(ray, world);
-                }
-                write_color(fout, pixel_color / m_sample_per_pixel);
-            }
-            else {
+            for (int sample = 0; sample < m_sample_per_pixel; sample++) {
                 Ray ray = getRay(i, j);
-                pixel_color = ray_color(ray, world);
-                write_color(fout, pixel_color);
+                pixel_color += ray_color(ray, m_max_depth, world);
             }
+            write_color(fout, pixel_color / m_sample_per_pixel);
         }
     }
 }

@@ -4,7 +4,9 @@
 
 #ifndef TIPE_RAY_TRACING_HITTABLE_HPP
 #define TIPE_RAY_TRACING_HITTABLE_HPP
-#include "Raytracer.hpp"
+
+#include "Vec3.hpp"
+#include "Ray.hpp"
 
 class Hit_record {
 public:

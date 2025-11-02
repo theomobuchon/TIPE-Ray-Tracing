@@ -9,7 +9,7 @@ Sphere::Sphere(const Point3 &center, const double radius) : m_center(center), m_
 
 Sphere &Sphere::operator=(const Sphere &sphere) = default;
 
-bool Sphere::hit(const Ray &ray, Interval int_valid, Hit_record &rec) const {
+bool Sphere::hit(const Ray &ray, const Interval int_valid, Hit_record &rec) const {
     const Vec3 oc = m_center - ray.origin();
     const double a = ray.direction().squaredNorm();
     const double h = p_scal(oc, ray.direction());

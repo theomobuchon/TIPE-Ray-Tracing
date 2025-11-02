@@ -1,8 +1,11 @@
 #include "Raytracer.hpp"
+#include "Vec3.cpp"
+#include "Ray.cpp"
 #include "Camera.cpp"
 #include "Sphere.cpp"
 #include "Hittable_list.cpp"
 #include <chrono>
+#include <memory>
 
 using namespace std;
 
@@ -13,9 +16,9 @@ int main() {
     world.add(make_shared<Sphere>(Point3(0.75, 0.5, -2), 0.5));
 
     ofstream fout("im_rt.ppm");
-    constexpr int im_width = 1024;
+    constexpr int im_width = 512;
     Camera cam(16./9., im_width, 1., Point3(0, 0, 0), 100);
-    cam.antialiasing = true;
+    cam.m_max_depth = 50;
 
     auto start = chrono::high_resolution_clock::now();
     cam.render(fout, world);

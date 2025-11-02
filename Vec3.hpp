@@ -18,12 +18,16 @@ public:
     Vec3 &operator/=(double lamb);
     Vec3 &operator=(const Vec3 &other);
     bool operator==(const Vec3 &other) const;
+    Vec3 operator-() const;
     void afficher(std::ostream &os) const;
     [[nodiscard]] double squaredNorm() const;
     [[nodiscard]] double norm() const;
     [[nodiscard]] double x() const;
     [[nodiscard]] double y() const;
     [[nodiscard]] double z() const;
+
+    static Vec3 random();
+    static Vec3 random(double min, double max);
 
 protected:
     void normalize();
@@ -49,5 +53,8 @@ using Point3 = Vec3;
 using Color = Vec3;
 
 void write_color(std::ofstream &fout, const Color &color);
+inline Vec3 random_in_unit_sphere();
+inline Vec3 random_on_hemisphere(const Vec3 &normal);
+inline double linear_to_gamma(double linear_component);
 
 #endif

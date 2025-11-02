@@ -5,9 +5,11 @@
 #ifndef TIPE_RAY_TRACING_HITTABLE_LIST_HPP
 #define TIPE_RAY_TRACING_HITTABLE_LIST_HPP
 
-#include "Raytracer.hpp"
 #include <vector>
+#include <memory>
 #include "Hittable.hpp"
+#include "Interval.hpp"
+#include "Ray.hpp"
 
 class Hittable_list: public Hittable {
 public:
