@@ -16,4 +16,12 @@ private:
     Color m_color;
 };
 
+class Lambertian final : public Material {
+public:
+    explicit Lambertian(const Color &color);
+
+protected:
+    Color m_albedo;
+};
+
 #endif //TIPE_RAY_TRACING_MATERIAL_HPP

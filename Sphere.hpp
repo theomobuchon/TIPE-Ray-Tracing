@@ -11,7 +11,7 @@
 #include "Interval.hpp"
 
 
-class Sphere: public Hittable {
+class Sphere final : public Hittable {
 public:
     Sphere(const Point3 &center, double radius);
     Sphere &operator=(const Sphere &sphere);
@@ -20,6 +20,7 @@ public:
 protected:
     Point3 m_center;
     double m_radius;
+    shared_ptr<Material> m_material;
 };
 
 

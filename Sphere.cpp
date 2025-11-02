@@ -31,6 +31,7 @@ bool Sphere::hit(const Ray &ray, const Interval int_valid, Hit_record &rec) cons
     rec.m_t = racine;
     rec.m_p = ray.at(racine);
     rec.m_normal = (rec.m_p - m_center) / m_radius;
+    rec.m_material = m_material;
 
     return true;
 }

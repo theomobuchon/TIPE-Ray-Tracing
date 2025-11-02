@@ -5,13 +5,18 @@
 #ifndef TIPE_RAY_TRACING_HITTABLE_HPP
 #define TIPE_RAY_TRACING_HITTABLE_HPP
 
+#include <memory>
+
 #include "Vec3.hpp"
 #include "Ray.hpp"
+
+class Material;
 
 class Hit_record {
 public:
     Point3 m_p;
     Vec3 m_normal;
+    shared_ptr<Material> m_material;
     double m_t;
     bool m_front_face;
 
