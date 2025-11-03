@@ -101,6 +101,12 @@ double Vec3::z() const {
     return m_z;
 }
 
+bool Vec3::near_zero() const {
+    constexpr auto s = 1e-8;
+    return fabs(m_x) < s && fabs(m_y) < s && fabs(m_z) < s;
+}
+
+
 Vec3 Vec3::random() {
     return {random_double(), random_double(), random_double()};
 }
@@ -129,6 +135,10 @@ Vec3 operator*(const Vec3 &e, const double lamb) {
 
 Vec3 operator*(const double lamb, const Vec3 &e) {
     return e*lamb;
+}
+
+Vec3 operator*(const Vec3 &e1, const Vec3 &e2) {
+    return {e1.m_x * e2.m_x, e1.m_y * e2.m_y, e1.m_z * e2.m_z};
 }
 
 Vec3 operator/(const Vec3 &e, const double lamb) {
@@ -185,4 +195,8 @@ inline Vec3 random_on_hemisphere(const Vec3 &normal) {
 
 inline double linear_to_gamma(double linear_component) {
     return sqrt(linear_component);
+}
+
+inline Vec3 reflect(const Vec3 &v, const Vec3 &n) {
+    return v - 2*p_scal(v, n) * n;
 }

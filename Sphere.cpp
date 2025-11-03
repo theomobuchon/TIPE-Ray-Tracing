@@ -4,7 +4,9 @@
 
 #include "Sphere.hpp"
 
-Sphere::Sphere(const Point3 &center, const double radius) : m_center(center), m_radius(radius) {
+#include <utility>
+
+Sphere::Sphere(const Point3 &center, const double radius, shared_ptr<Material> material) : m_center(center), m_radius(radius), m_material(std::move(material)) {
 }
 
 Sphere &Sphere::operator=(const Sphere &sphere) = default;

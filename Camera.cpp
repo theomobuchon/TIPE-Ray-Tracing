@@ -4,6 +4,7 @@
 
 #include "Camera.hpp"
 #include "Interval.cpp"
+#include "Material.hpp"
 
 using namespace std;
 
@@ -35,8 +36,11 @@ Color Camera::ray_color(const Ray &ray, const int depth, const Hittable &world) 
     if (depth <= 0) return {0, 0, 0};
 
     if (Hit_record rec; world.hit(ray, Interval(0.001, infinite), rec)) {
-        const Vec3 direction = rec.m_normal + random_in_unit_sphere();
-        return 0.5 * ray_color(Ray(rec.m_p, direction), depth - 1, world);
+        Ray scattered_ray;
+        if (Color attenuation; rec.m_material->scatter(ray, rec, attenuation, scattered_ray)) {
+            return attenuation * ray_color(scattered_ray, depth - 1, world);
+        }
+        return {0, 0, 0};
     }
 
     const Vec3 unit_direction = normalisate(ray.direction());

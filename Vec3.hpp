@@ -25,6 +25,7 @@ public:
     [[nodiscard]] double x() const;
     [[nodiscard]] double y() const;
     [[nodiscard]] double z() const;
+    [[nodiscard]] bool near_zero() const;
 
     static Vec3 random();
     static Vec3 random(double min, double max);
@@ -40,6 +41,7 @@ protected:
     friend Vec3 normalisate(const Vec3 &e);
     friend Vec3 p_vect(const Vec3 &e1, const Vec3 &e2);
     friend double p_scal(const Vec3 &e1, const Vec3 &e2);
+    friend Vec3 operator*(const Vec3 &e1, const Vec3 &e2);
 };
 
 Vec3 operator+(const Vec3 &e1, const Vec3 &e2);
@@ -56,5 +58,6 @@ void write_color(std::ofstream &fout, const Color &color);
 inline Vec3 random_in_unit_sphere();
 inline Vec3 random_on_hemisphere(const Vec3 &normal);
 inline double linear_to_gamma(double linear_component);
+inline Vec3 reflect(const Vec3 &v, const Vec3 &n);
 
 #endif

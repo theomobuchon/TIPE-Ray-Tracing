@@ -13,7 +13,7 @@
 
 class Sphere final : public Hittable {
 public:
-    Sphere(const Point3 &center, double radius);
+    Sphere(const Point3 &center, double radius, shared_ptr<Material> material);
     Sphere &operator=(const Sphere &sphere);
     bool hit(const Ray &ray, Interval int_valid, Hit_record &rec) const override;
 
