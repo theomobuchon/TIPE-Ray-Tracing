@@ -15,7 +15,7 @@ int main() {
 
     auto material_ground = make_shared<Lambertian>(Color(0.8, 0.8, 0.8));
     auto material_center = make_shared<Lambertian>(Color(0.1, 0.2, 0.5));
-    auto material_left   = make_shared<Metal>(Color(0.8, 0.8, 0.8), 0.1);
+    auto material_left   = make_shared<Dielectric>(1.50);
     auto material_right  = make_shared<Metal>(Color(0.8, 0.6, 0.2), 0.3);
 
     world.add(make_shared<Sphere>(Point3(0, 0, -1), 0.5, material_center));
@@ -24,7 +24,7 @@ int main() {
     world.add(make_shared<Sphere>(Point3(-2., 0, -2), 0.5, material_left));
 
     ofstream fout("im_rt.ppm");
-    constexpr int im_width = 1024;
+    constexpr int im_width = 512;
     Camera cam(16./9., im_width, 1., Point3(0, 0, 0), 100);
     cam.m_max_depth = 50;
 

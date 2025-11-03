@@ -37,4 +37,14 @@ protected:
     double m_fuzz;
 };
 
+class Dielectric final : public Material {
+public:
+    explicit Dielectric(double refractive_index);
+
+    bool scatter(const Ray &r_in, Hit_record &rec, Color &attenuation, Ray &scattered) const override;
+
+protected:
+    double m_refractive_index;
+};
+
 #endif //TIPE_RAY_TRACING_MATERIAL_HPP

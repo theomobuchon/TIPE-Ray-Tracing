@@ -59,5 +59,6 @@ inline Vec3 random_in_unit_sphere();
 inline Vec3 random_on_hemisphere(const Vec3 &normal);
 inline double linear_to_gamma(double linear_component);
 inline Vec3 reflect(const Vec3 &v, const Vec3 &n);
+inline Vec3 refract(const Vec3 &v, const Vec3 &n, double eta);
 
 #endif
