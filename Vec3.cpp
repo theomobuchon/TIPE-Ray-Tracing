@@ -202,8 +202,8 @@ inline Vec3 reflect(const Vec3 &v, const Vec3 &n) {
 }
 
 inline Vec3 refract(const Vec3 &v, const Vec3 &n, const double eta) {
-    const auto cos_teta = Interval(-1, 1).clamp(p_scal(-v, n));
+    const auto cos_teta = fmin(p_scal(-v, n), 1.);
     const Vec3 r_out_perp = eta * (v + cos_teta * n);
-    const Vec3 r_out_parallel = -sqrt(fabs(1 - r_out_perp.squaredNorm()))*n;
+    const Vec3 r_out_parallel = -sqrt(fabs(1. - r_out_perp.squaredNorm()))*n;
     return r_out_perp + r_out_parallel;
 }

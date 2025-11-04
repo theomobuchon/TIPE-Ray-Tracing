@@ -2,6 +2,9 @@
 // Created by nolan on 03/11/2025.
 //
 #include "Material.hpp"
+#include <cmath>
+
+using namespace std;
 
 Lambertian::Lambertian(const Color &albedo): m_albedo(albedo) {}
 
@@ -32,11 +35,15 @@ bool Dielectric::scatter(const Ray &r_in, Hit_record &rec, Color &attenuation, R
     attenuation = Color(1.0, 1.0, 1.0);
     const double effective_refractive_index = rec.m_front_face ? 1./m_refractive_index : m_refractive_index;
 
-    double cos_teta = Interval(-1., 1.).clamp(p_scal(r_in.direction(), rec.m_normal));
-    double sin_teta = sqrt(1. - cos_teta * cos_teta);
-    Vec3 direction;
+    const Vec3 unit_direction = normalisate(r_in.direction());
+    const double cos_teta = fmin(p_scal(unit_direction, rec.m_normal), 1.);
+    const double sin_teta = sqrt(1. - cos_teta * cos_teta);
+    const bool cannot_refract = effective_refractive_index * sin_teta > 1.;
 
-    const Vec3 refracted = refract(normalisate(r_in.direction()), rec.m_normal, effective_refractive_index);
-    scattered = Ray(rec.m_p, refracted);
+    Vec3 direction;
+    if (cannot_refract) direction = reflect(unit_direction, rec.m_normal);
+    else direction = refract(unit_direction, rec.m_normal, effective_refractive_index);
+
+    scattered = Ray(rec.m_p, direction);
     return true;
 }

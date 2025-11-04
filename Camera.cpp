@@ -22,8 +22,8 @@ Camera::Camera(const double ratio, const int im_width, const double focal_length
 
 void Camera::initialize() {
     m_im_height = static_cast<int>(m_im_width / m_ratio);
-    m_viewport_height = 2.0;
-    m_viewport_width = m_viewport_height / (static_cast<double>(m_im_height)/static_cast<double>(m_im_width));
+    m_viewport_width = 2.0;
+    m_viewport_height = m_viewport_width / (static_cast<double>(m_im_width)/static_cast<double>(m_im_height));
     m_u_viewport = Vec3(m_viewport_width, 0, 0);
     m_v_viewport = Vec3(0, -m_viewport_height, 0);
     m_origin_viewport = m_center - m_u_viewport/2 - m_v_viewport/2 + Vec3(0, 0, -m_focal_length);
