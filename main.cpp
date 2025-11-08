@@ -63,7 +63,7 @@ int main() {
     cam.defocus_angle = 0.6;
     cam.focus_dist = 10.0;
 
-    ofstream fout("im_rt.ppm");
+    ofstream fout("images/im_rt.ppm");
 
     auto start = chrono::high_resolution_clock::now();
     cam.render(fout, world);
