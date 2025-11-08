@@ -6,7 +6,6 @@
 #define TIPE_RAY_TRACING_HITTABLE_HPP
 
 #include <memory>
-
 #include "Vec3.hpp"
 #include "Ray.hpp"
 

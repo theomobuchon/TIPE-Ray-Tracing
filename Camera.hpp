@@ -5,39 +5,42 @@
 #ifndef TIPE_RAY_TRACING_CAMERA_HPP
 #define TIPE_RAY_TRACING_CAMERA_HPP
 
-#include "Raytracer.hpp"
 #include "Hittable.hpp"
 
 class Camera {
 public:
-    Camera(double ratio, int im_width, double focal_length);
-    Camera(double ratio, int im_width, double focal_length, const Point3 &center);
-    Camera(double ratio, int im_width, double focal_length, const Point3 &center, int sample_per_pixel);
+    Camera(double ratio, int im_width, const Point3 &center, const Vec3 &look_direction);
     Camera &operator=(const Camera &camera);
-    void render(ofstream &fout, const Hittable &world);
+    void render(std::ofstream &fout, const Hittable &world);
 
-    Point3 m_center;
-    double m_ratio;
-    int m_im_width;
-    int m_sample_per_pixel;
-    int m_max_depth;
+    Point3 center; // Center of the camera
+    Vec3 look_direction; // The direction in which the calera is oriented
+    Vec3 up = Vec3(0, 1, 0); // The vertical for the camera
+    double v_fov = 90; // field of view (in degrees)
+
+    double ratio; // The ration of the image rendered
+    int im_width; // The width of the image rendered
+    int samples_per_pixel = 100; // The number of rays for each pixel
+    int max_depth = 50; // The maximal number of collisions for each rays
+
+    double defocus_angle = 0; // Variation angle of rays through each pixel of the image
+    double focus_dist = 10; // The distance from camera where the focus is perfect
 
 protected:
     void initialize();
     [[nodiscard]] static Color ray_color(const Ray &ray, int depth, const Hittable &world);
     [[nodiscard]] Ray getRay(int x, int y) const;
-    [[nodiscard]] static Vec3 sample_square() ;
+    [[nodiscard]] static Vec3 sample_square();
+    [[nodiscard]] Vec3 random_in_defocus_disk() const;
+    [[nodiscard]] Color partial_color(const Hittable &world, int i, int j, int nb_iterations) const;
 
-    int m_im_height{};
-    double m_viewport_width{};
-    double m_viewport_height{};
-    double m_focal_length;
-    Point3 m_origin_viewport;
+    double m_im_height{};
+    Vec3 m_u, m_v, m_w;
     Point3 m_pix00;
-    Vec3 m_u_viewport;
-    Vec3 m_v_viewport;
     Vec3 m_du_viewport;
     Vec3 m_dv_viewport;
+    Vec3 m_u_defocus_disk;
+    Vec3 m_v_defocus_disk;
 
 };
 

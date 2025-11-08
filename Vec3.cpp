@@ -111,7 +111,7 @@ Vec3 Vec3::random() {
     return {random_double(), random_double(), random_double()};
 }
 
-Vec3 Vec3::random(double min, double max) {
+Vec3 Vec3::random(const double min, const double max) {
     return {random_double(min, max), random_double(min, max), random_double(min, max)};
 }
 
@@ -157,7 +157,7 @@ Vec3 p_vect(const Vec3 &e1, const Vec3 &e2) {
     return e3;
 }
 
-Vec3 normalisate(const Vec3 &e) {
+Vec3 normalised(const Vec3 &e) {
     Vec3 e2(e);
     e2.normalize();
     return e2;
@@ -173,17 +173,17 @@ void write_color(std::ofstream &fout, const Color &color) {
     const double x = linear_to_gamma(color.x());
     const double y = linear_to_gamma(color.y());
     const double z = linear_to_gamma(color.z());
-    const int rbyte = static_cast<int>(256 * intensity.clamp(x));
-    const int gbyte = static_cast<int>(256 * intensity.clamp(y));
-    const int bbyte = static_cast<int>(256 * intensity.clamp(z));
-    fout << rbyte << " " << gbyte << " " << bbyte << std::endl;
+    const int red_byte = static_cast<int>(256 * intensity.clamp(x));
+    const int green_byte = static_cast<int>(256 * intensity.clamp(y));
+    const int blue_byte = static_cast<int>(256 * intensity.clamp(z));
+    fout << red_byte << " " << green_byte << " " << blue_byte << std::endl;
 }
 
 inline Vec3 random_in_unit_sphere() {
-    auto x = random_double(-1, 1);
-    const auto y_max = sqrt(1 - x*x);
-    auto y = random_double(-y_max, +y_max);
-    auto z = sqrt(Interval(0, 1).clamp(1 - x*x - y*y));
+    const auto x = random_double(-1, 1);
+    const auto y_max = sqrt(fabs(1 - x*x));
+    const auto y = random_double(-y_max, +y_max);
+    const auto z = random_sign()*sqrt(fabs(1 - x*x - y*y));
     return {x, y, z};
 }
 
@@ -193,7 +193,14 @@ inline Vec3 random_on_hemisphere(const Vec3 &normal) {
     return -vec_in_unit_sphere;
 }
 
-inline double linear_to_gamma(double linear_component) {
+inline Vec3 random_in_unit_disk() {
+    const auto x = random_double(-1, 1);
+    const auto y_max = sqrt(fabs(1 - x*x));
+    const auto y = random_double(-y_max, y_max);
+    return {x, y, 0};
+}
+
+inline double linear_to_gamma(const double linear_component) {
     return sqrt(linear_component);
 }
 

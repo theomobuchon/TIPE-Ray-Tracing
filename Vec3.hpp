@@ -38,7 +38,7 @@ protected:
     double m_y;
     double m_z;
 
-    friend Vec3 normalisate(const Vec3 &e);
+    friend Vec3 normalised(const Vec3 &e);
     friend Vec3 p_vect(const Vec3 &e1, const Vec3 &e2);
     friend double p_scal(const Vec3 &e1, const Vec3 &e2);
     friend Vec3 operator*(const Vec3 &e1, const Vec3 &e2);
@@ -57,6 +57,7 @@ using Color = Vec3;
 void write_color(std::ofstream &fout, const Color &color);
 inline Vec3 random_in_unit_sphere();
 inline Vec3 random_on_hemisphere(const Vec3 &normal);
+inline Vec3 random_in_unit_disk();
 inline double linear_to_gamma(double linear_component);
 inline Vec3 reflect(const Vec3 &v, const Vec3 &n);
 inline Vec3 refract(const Vec3 &v, const Vec3 &n, double eta);

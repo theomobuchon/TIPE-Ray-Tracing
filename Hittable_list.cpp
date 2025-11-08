@@ -22,7 +22,7 @@ void Hittable_list::clear() {
     m_objects.clear();
 }
 
-bool Hittable_list::hit(const Ray &ray, Interval int_valid, Hit_record &rec) const {
+bool Hittable_list::hit(const Ray &ray, const Interval int_valid, Hit_record &rec) const {
     Hit_record tempRec = rec;
     auto hit_anything = false;
     auto closest = int_valid.max();
