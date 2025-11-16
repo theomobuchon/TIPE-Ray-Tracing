@@ -6,6 +6,7 @@
 #define TIPE_RAY_TRACING_VEC3_H
 
 #include <fstream>
+#include <string>
 
 class Vec3
 {
@@ -20,6 +21,7 @@ public:
     bool operator==(const Vec3 &other) const;
     Vec3 operator-() const;
     void afficher(std::ostream &os) const;
+    [[nodiscard]] string repr_string() const;
     [[nodiscard]] double squaredNorm() const;
     [[nodiscard]] double norm() const;
     [[nodiscard]] double x() const;

@@ -26,6 +26,8 @@ public:
     double defocus_angle = 0; // Variation angle of rays through each pixel of the image
     double focus_dist = 10; // The distance from camera where the focus is perfect
 
+    bool parallelism = false; // To switch on/off the parallelism
+
 protected:
     void initialize();
     [[nodiscard]] static Color ray_color(const Ray &ray, int depth, const Hittable &world);

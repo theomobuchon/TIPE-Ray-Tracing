@@ -84,6 +84,16 @@ void Vec3::afficher(ostream &os) const {
     os << "(" << m_x << ", " << m_y << ", " << m_z << ")";
 }
 
+string Vec3::repr_string() const {
+    string s_x = to_string(m_x);
+    string s_y = to_string(m_y);
+    string s_z = to_string(m_z);
+    s_x.erase(s_x.find_last_not_of('0') + 1, string::npos);
+    s_y.erase(s_y.find_last_not_of('0') + 1, string::npos);
+    s_z.erase(s_z.find_last_not_of('0') + 1, string::npos);
+    return "(" + s_x + "," + s_y + "," + s_z + ")";
+}
+
 void Vec3::normalize() {
     const double n = this -> norm();
     *this /= n;

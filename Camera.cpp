@@ -80,16 +80,23 @@ void Camera::render(ofstream &fout, const Hittable &world) {
 
     for (int j = 0; j < m_im_height; j++) {
         for (int i = 0; i < im_width; i++) {
-            const int nb_thread = static_cast<int>(thread::hardware_concurrency());
-            future<Color> results[nb_thread];
-            for (int k = 0; k < nb_thread; k++) {
-                results[k] = async(launch::async, &Camera::partial_color, this, ref(world), i, j,
-                                   samples_per_pixel / nb_thread);
+            Color pixel_color;
+            if (parallelism) {
+                const int nb_thread = static_cast<int>(thread::hardware_concurrency());
+                future<Color> results[nb_thread];
+                for (int k = 0; k < nb_thread; k++) {
+                    results[k] = async(launch::async, &Camera::partial_color, this, ref(world), i, j,
+                                       samples_per_pixel / nb_thread);
+                }
+                pixel_color = partial_color(world, i, j, samples_per_pixel % nb_thread);
+                for (int k = 0; k < nb_thread; k++) {
+                    pixel_color += results[k].get();
+                }
             }
-            auto pixel_color = partial_color(world, i, j, samples_per_pixel % nb_thread);
-            for (int k = 0; k < nb_thread; k++) {
-                pixel_color += results[k].get();
+            else {
+                pixel_color = partial_color(world, i, j, samples_per_pixel);
             }
+
             write_color(fout, pixel_color / samples_per_pixel);
         }
         clog << "Lines treated : " << j+1 << "/" << m_im_height << "\n";
