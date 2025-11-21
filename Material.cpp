@@ -6,6 +6,14 @@
 
 using namespace std;
 
+bool Material::scatter(const Ray &r_in, Hit_record &rec, Color &attenuation, Ray &scattered) const {
+    return false;
+}
+
+Color Material::emitted() const {
+    return {0, 0, 0};
+}
+
 Lambertian::Lambertian(const Color &albedo): m_albedo(albedo) {}
 
 bool Lambertian::scatter(const Ray &r_in, Hit_record &rec, Color &attenuation, Ray &scattered) const {
@@ -46,4 +54,10 @@ bool Dielectric::scatter(const Ray &r_in, Hit_record &rec, Color &attenuation, R
 
     scattered = Ray(rec.m_p, direction);
     return true;
+}
+
+Diffuse_light::Diffuse_light(const Color &ambient): m_color(ambient) {}
+
+Color Diffuse_light::emitted() const {
+    return m_color;
 }

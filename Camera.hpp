@@ -6,6 +6,7 @@
 #define TIPE_RAY_TRACING_CAMERA_HPP
 
 #include "Hittable.hpp"
+#include <functional>
 
 class Camera {
 public:
@@ -28,9 +29,12 @@ public:
 
     bool parallelism = false; // To switch on/off the parallelism
 
+    std::function<Color(Vec3)> background =
+        [](Vec3) {return Color(0., 0., 0.1);}; // Set the background color of the scene
+
 protected:
     void initialize();
-    [[nodiscard]] static Color ray_color(const Ray &ray, int depth, const Hittable &world);
+    [[nodiscard]] Color ray_color(const Ray &ray, int depth, const Hittable &world) const;
     [[nodiscard]] Ray getRay(int x, int y) const;
     [[nodiscard]] static Vec3 sample_square();
     [[nodiscard]] Vec3 random_in_defocus_disk() const;

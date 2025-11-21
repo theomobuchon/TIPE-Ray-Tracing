@@ -40,20 +40,23 @@ void Camera::initialize() {
     m_v_defocus_disk = defocus_radius * m_v;
 }
 
-Color Camera::ray_color(const Ray &ray, const int depth, const Hittable &world) {
+Color Camera::ray_color(const Ray &ray, const int depth, const Hittable &world) const {
     if (depth <= 0) { return {0, 0, 0};}
 
-    if (Hit_record rec; world.hit(ray, Interval(0.001, infinite), rec)) {
-        Ray scattered_ray;
-        if (Color attenuation; rec.m_material->scatter(ray, rec, attenuation, scattered_ray)) {
-            return attenuation * ray_color(scattered_ray, depth - 1, world);
-        }
-        return {0, 0, 0};
+    Hit_record rec;
+    if (!world.hit(ray, Interval(0.001, infinite), rec)) {
+        return background(ray.direction());
     }
 
-    const Vec3 unit_direction = normalised(ray.direction());
-    const double a = 0.5*(unit_direction.y() + 1.0);
-    return (1.0-a)*Color(1.0, 1.0, 1.0) + a*Color(0.5, 0.7, 1.0);
+    Ray scattered_ray;
+    Color attenuation;
+    Color emitted = rec.m_material->emitted();
+
+    if (!rec.m_material->scatter(ray, rec, attenuation, scattered_ray)) {
+        return emitted;
+    }
+
+    return emitted + attenuation * ray_color(scattered_ray, depth - 1, world);
 }
 
 Camera &Camera::operator=(const Camera &camera) = default;
