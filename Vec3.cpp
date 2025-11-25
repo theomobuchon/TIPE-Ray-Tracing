@@ -59,6 +59,12 @@ Vec3 Vec3::operator-() const {
     return -1*(*this);
 }
 
+double Vec3::operator[](int i) const {
+    if (i == 0) {return m_x;}
+    if (i == 1) {return m_y;}
+    return m_z;
+}
+
 double Vec3::squaredNorm() const {
     return m_x * m_x + m_y * m_y + m_z * m_z;
 }

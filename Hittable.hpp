@@ -8,6 +8,7 @@
 #include <memory>
 #include "Vec3.hpp"
 #include "Ray.hpp"
+#include "AABB.hpp"
 
 class Material;
 
@@ -26,6 +27,7 @@ class Hittable {
 public:
     virtual ~Hittable() = default;
     virtual bool hit(const Ray &ray, Interval int_valid, Hit_record &rec) const = 0;
+    [[nodiscard]] virtual AABB bounding_box() const = 0;
 };
 
 

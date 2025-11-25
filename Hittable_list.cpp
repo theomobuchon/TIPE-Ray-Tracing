@@ -16,6 +16,7 @@ Hittable_list &Hittable_list::operator=(const Hittable_list &hittable_list) = de
 
 void Hittable_list::add(const shared_ptr<Hittable> &object) {
     m_objects.push_back(object);
+    m_bbox = AABB(m_bbox, object->bounding_box());
 }
 
 void Hittable_list::clear() {
@@ -36,4 +37,8 @@ bool Hittable_list::hit(const Ray &ray, const Interval int_valid, Hit_record &re
     }
 
     return hit_anything;
+}
+
+AABB Hittable_list::bounding_box() const {
+    return m_bbox;
 }

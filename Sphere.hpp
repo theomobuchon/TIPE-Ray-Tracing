@@ -13,14 +13,16 @@
 
 class Sphere final : public Hittable {
 public:
-    Sphere(const Point3 &center, double radius, shared_ptr<Material> material);
+    Sphere(const Point3 &center, double radius, std::shared_ptr<Material> material);
     Sphere &operator=(const Sphere &sphere);
     bool hit(const Ray &ray, Interval int_valid, Hit_record &rec) const override;
+    [[nodiscard]] AABB bounding_box() const override;
 
 protected:
     Point3 m_center;
     double m_radius;
-    shared_ptr<Material> m_material;
+    std::shared_ptr<Material> m_material;
+    AABB m_bbox;
 };
 
 

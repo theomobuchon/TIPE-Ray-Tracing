@@ -11,7 +11,9 @@
 #include "Interval.hpp"
 #include "Ray.hpp"
 
-class Hittable_list: public Hittable {
+class BVH_node;
+
+class Hittable_list final : public Hittable {
 public:
     Hittable_list();
     explicit Hittable_list(const std::shared_ptr<Hittable> &object);
@@ -19,9 +21,13 @@ public:
     void add(const std::shared_ptr<Hittable> &object);
     void clear();
     bool hit(const Ray &ray, Interval int_valid, Hit_record &rec) const override;
+    [[nodiscard]] AABB bounding_box() const override;
+
+    friend BVH_node;
 
 protected:
     std::vector<std::shared_ptr<Hittable>> m_objects;
+    AABB m_bbox;
 };
 
 

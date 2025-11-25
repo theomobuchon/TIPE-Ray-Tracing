@@ -8,7 +8,9 @@
 #include "Camera.cpp"
 #include "Sphere.cpp"
 #include "Material.cpp"
+#include "BVH_node.cpp"
 #include "Hittable_list.cpp"
+#include "AABB.cpp"
 #include <memory>
 #include <string>
 
@@ -33,11 +35,13 @@ int lambertianExample() {
     auto material = make_shared<Lambertian>(Color(0.5, 0., 0.5));
     world.add(make_shared<Sphere>(Point3(0, 0.5, 0.5), 0.5, material));
 
+    world = Hittable_list(make_shared<BVH_node>(world));
+
     double im_ratio = 1.;
     int im_width = 512;
     int im_height = im_width / static_cast<int>(im_ratio);
     Point3 cam_center = {0., 0.5, -2.};
-    Vec3 cam_dir = Point3(0., 0., 1.);
+    auto cam_dir = Point3(0., 0., 1.);
     Camera cam(im_ratio, im_width, cam_center, cam_dir);
 
     cam.samples_per_pixel = 100;
@@ -84,11 +88,13 @@ int metalExample() {
     world.add(make_shared<Sphere>(Point3(0.,0.65,0.5), 0.6, material1));
     world.add(make_shared<Sphere>(Point3(+1.3,0.65,0.5), 0.6, material2));
 
+    world = Hittable_list(make_shared<BVH_node>(world));
+
     double im_ratio = 1.;
     int im_width = 512;
     int im_height = im_width / static_cast<int>(im_ratio);
     Point3 cam_center = {0., 0.5, -2.};
-    Vec3 cam_dir = Point3(0., 0., 1.);
+    auto cam_dir = Point3(0., 0., 1.);
     Camera cam(im_ratio, im_width, cam_center, cam_dir);
 
     cam.samples_per_pixel = 100;
@@ -133,11 +139,13 @@ int dielectricExample() {
     world.add(make_shared<Sphere>(Point3(-0.85,0.85,0.5), 0.6, air_in_glass));
     world.add(make_shared<Sphere>(Point3(+0.85,0.85,0.5), 0.8, air_in_water));
 
+    world = Hittable_list(make_shared<BVH_node>(world));
+
     double im_ratio = 1.;
     int im_width = 512;
     int im_height = im_width / static_cast<int>(im_ratio);
     Point3 cam_center = {0., 0.5, -2.};
-    Vec3 cam_dir = Point3(0., 0., 1.);
+    auto cam_dir = Point3(0., 0., 1.);
     Camera cam(im_ratio, im_width, cam_center, cam_dir);
 
     cam.samples_per_pixel = 100;
@@ -212,11 +220,13 @@ int sphere_field_demo() {
     auto material3 = make_shared<Metal>(Color(0.7, 0.6, 0.5), 0.0);
     world.add(make_shared<Sphere>(Point3(4, 1, 0), 1.0, material3));
 
+    world = Hittable_list(make_shared<BVH_node>(world));
+
     double im_ratio = 1.;
     int im_width = 512;
     int im_height = im_width / static_cast<int>(im_ratio);
     Point3 cam_center = {13, 2., 3.};
-    Vec3 cam_dir = Point3(-13., -2., -3.);
+    auto cam_dir = Point3(-13., -2., -3.);
     Camera cam(im_ratio, im_width, cam_center, cam_dir);
 
     cam.samples_per_pixel = 250;
@@ -232,7 +242,7 @@ int sphere_field_demo() {
 
     cam.background = degradated_background;
 
-    string im_title = "Sphere_field_demo";
+    string im_title = "Sphere_field_demo_BVH";
     string file_dir = "images/";
     string file_name = "im_rt_" + to_string(im_width) + "x" + to_string(im_height) + "_cc=" + cam_center.repr_string() \
                        + "_cd=" + cam_dir.repr_string() + "_cup=" + cam.up.repr_string() + "_spm=" + \
@@ -254,20 +264,22 @@ int testLight() {
     auto shield_material = make_shared<Lambertian>(Color(0.2, 0.2, 0.));
     world.add(make_shared<Sphere>(Point3(0,0,0), 3, shield_material));
 
-    auto material0 = make_shared<Lambertian>(Color(0.2, 0., 0.4));
+    auto material0 = make_shared<Dielectric>(1./1.33);
     world.add(make_shared<Sphere>(Point3(0,0.65,0.5), 0.4, material0));
 
     auto light_material = make_shared<Diffuse_light>(Color(1.0, 1.0, 1.0));
     world.add(make_shared<Sphere>(Point3(1.2, 1., 0), 0.6, light_material));
 
+    world = Hittable_list(make_shared<BVH_node>(world));
+
     double im_ratio = 1.;
     int im_width = 512;
     int im_height = im_width / static_cast<int>(im_ratio);
     Point3 cam_center = {0., 0.5, -2.};
-    Vec3 cam_dir = Point3(0., 0., 1.);
+    auto cam_dir = Point3(0., 0., 1.);
     Camera cam(im_ratio, im_width, cam_center, cam_dir);
 
-    cam.samples_per_pixel = 500;
+    cam.samples_per_pixel = 100;
     cam.max_depth = 10;
 
     cam.v_fov = 60;

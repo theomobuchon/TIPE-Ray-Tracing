@@ -10,6 +10,8 @@
 using namespace std;
 
 Sphere::Sphere(const Point3 &center, const double radius, shared_ptr<Material> material) : m_center(center), m_radius(radius), m_material(std::move(material)) {
+    const auto r_vec = Vec3(m_radius, m_radius, m_radius);
+    m_bbox = AABB(center - r_vec, m_center + r_vec);
 }
 
 Sphere &Sphere::operator=(const Sphere &sphere) = default;
@@ -39,4 +41,8 @@ bool Sphere::hit(const Ray &ray, const Interval int_valid, Hit_record &rec) cons
     rec.m_material = m_material;
 
     return true;
+}
+
+AABB Sphere::bounding_box() const {
+    return m_bbox;
 }

@@ -19,14 +19,18 @@ inline double degrees_to_radians(const double degree) {
 
 inline random_device rd;
 inline mt19937 engine(rd());
-inline uniform_real_distribution<> alea(0, 1);
+inline uniform_real_distribution<> real_alea(0, 1);
 
 inline double random_double() {
-    return alea(engine);
+    return real_alea(engine);
+}
+
+inline int random_int(const int min, const int max) {
+    return uniform_int_distribution<>(min, max)(engine);
 }
 
 inline int random_sign() {
-    return alea(engine) <= 1/2 ? 1 : -1;
+    return real_alea(engine) <= 1/2 ? 1 : -1;
 }
 
 inline double random_double(const double min, const double max) {

@@ -16,7 +16,17 @@ Interval::Interval(double min, double max) : m_min(min), m_max(max) {
 
 }
 
+Interval::Interval(const Interval &i1, const Interval &i2) {
+    m_min = i1.min() <= i2.min() ? i1.min() : i2.min();
+    m_max = i1.max() >= i2.max() ? i1.max() : i2.max();
+}
+
 Interval &Interval::operator=(const Interval &interval) = default;
+
+Interval Interval::expand(double delta) const {
+    double pas = delta / 2;
+    return {m_min - pas, m_max + pas};
+}
 
 double Interval::min() const {
     return m_min;
@@ -28,6 +38,14 @@ double Interval::max() const {
 
 double Interval::size() const {
     return m_max - m_min;
+}
+
+void Interval::setMin(const double min) {
+    m_min = min;
+}
+
+void Interval::setMax(const double max) {
+    m_max = max;
 }
 
 bool Interval::contains(const double value) const {

@@ -20,6 +20,7 @@ public:
     Vec3 &operator=(const Vec3 &other);
     bool operator==(const Vec3 &other) const;
     Vec3 operator-() const;
+    double operator[](int i) const;
     void afficher(std::ostream &os) const;
     [[nodiscard]] string repr_string() const;
     [[nodiscard]] double squaredNorm() const;
