@@ -88,7 +88,7 @@ int metalExample() {
     world.add(make_shared<Sphere>(Point3(0.,0.65,0.5), 0.6, material1));
     world.add(make_shared<Sphere>(Point3(+1.3,0.65,0.5), 0.6, material2));
 
-    world = Hittable_list(make_shared<BVH_node>(world));
+    //world = Hittable_list(make_shared<BVH_node>(world));
 
     double im_ratio = 1.;
     int im_width = 512;
@@ -220,7 +220,7 @@ int sphere_field_demo() {
     auto material3 = make_shared<Metal>(Color(0.7, 0.6, 0.5), 0.0);
     world.add(make_shared<Sphere>(Point3(4, 1, 0), 1.0, material3));
 
-    world = Hittable_list(make_shared<BVH_node>(world));
+    //world = Hittable_list(make_shared<BVH_node>(world));
 
     double im_ratio = 1.;
     int im_width = 512;
@@ -268,7 +268,10 @@ int testLight() {
     world.add(make_shared<Sphere>(Point3(0,0.65,0.5), 0.4, material0));
 
     auto light_material = make_shared<Diffuse_light>(Color(1.0, 1.0, 1.0));
-    world.add(make_shared<Sphere>(Point3(1.2, 1., 0), 0.6, light_material));
+    world.add(make_shared<Sphere>(Point3(1.2, 1., -1), 0.6, light_material));
+
+    auto light_material2 = make_shared<Diffuse_light>(Color(1.0, 0., 0.));
+    world.add(make_shared<Sphere>(Point3(-1.2, 1., 0), 0.6, light_material2));
 
     world = Hittable_list(make_shared<BVH_node>(world));
 
@@ -292,7 +295,7 @@ int testLight() {
 
     cam.background = degradated_background;
 
-    string im_title = "LightExample";
+    string im_title = "Light2Examples";
     string file_dir = "images/";
     string file_name = "im_rt_" + to_string(im_width) + "x" + to_string(im_height) + "_cc=" + cam_center.repr_string() \
                         + "_cd=" + cam_dir.repr_string() + "_cup=" + cam.up.repr_string() + "_spm=" + \
