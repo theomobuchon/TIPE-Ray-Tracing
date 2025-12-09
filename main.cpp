@@ -8,7 +8,7 @@ int main() {
     const auto start = chrono::high_resolution_clock::now();
 
     int out;
-    switch(2) {
+    switch(3) {
         case 0: out = lambertianExample(); break;
         case 1: out = dielectricExample(); break;
         case 2: out = metalExample(); break;

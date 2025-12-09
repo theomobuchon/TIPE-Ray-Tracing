@@ -68,7 +68,8 @@ int lambertianExample() {
     cout << file_dir + file_name << "\n";
     if (!fout) {cerr << "Erreur lors de l'ouverture du fichier !"; return 1;}
 
-    cam.render(fout, world);
+    Image image = cam.render(world);
+    image.write_result(fout);
 
     return 0;
 }
@@ -88,7 +89,7 @@ int metalExample() {
     world.add(make_shared<Sphere>(Point3(0.,0.65,0.5), 0.6, material1));
     world.add(make_shared<Sphere>(Point3(+1.3,0.65,0.5), 0.6, material2));
 
-    world = Hittable_list(make_shared<BVH_node>(world));
+    //world = Hittable_list(make_shared<BVH_node>(world));
 
     double im_ratio = 1.;
     int im_width = 512;
@@ -106,11 +107,11 @@ int metalExample() {
     cam.defocus_angle = 0.;
     cam.focus_dist = 10.;
 
-    cam.parallelism = false;
+    cam.parallelism = true;
 
     cam.background = degradated_background;
 
-    string im_title = "MetalExampleByFuzz(0.8-0.4-0.)";
+    string im_title = "MetalExampleByFuzz(0.8-0.4-0.)vv";
     string file_dir = "images/";
     string file_name = "im_rt_" + to_string(im_width) + "x" + to_string(im_height) + "_cc=" + cam_center.repr_string() \
                         + "_cd=" + cam_dir.repr_string() + "_cup=" + cam.up.repr_string() + "_spm=" + \
@@ -121,7 +122,8 @@ int metalExample() {
     cout << file_dir + file_name << "\n";
     if (!fout) {cerr << "Erreur lors de l'ouverture du fichier !"; return 1;}
 
-    cam.render(fout, world);
+    Image image = cam.render(world);
+    image.write_result(fout);
 
     return 0;
 }
@@ -172,7 +174,8 @@ int dielectricExample() {
     cout << file_dir + file_name << "\n";
     if (!fout) {cerr << "Erreur lors de l'ouverture du fichier !"; return 1;}
 
-    cam.render(fout, world);
+    Image image = cam.render(world);
+    image.write_result(fout);
 
     return 0;
 }
@@ -242,7 +245,7 @@ int sphere_field_demo() {
 
     cam.background = degradated_background;
 
-    string im_title = "Sphere_field_demo_BVH";
+    string im_title = "Sphere_field_demo_newp";
     string file_dir = "images/";
     string file_name = "im_rt_" + to_string(im_width) + "x" + to_string(im_height) + "_cc=" + cam_center.repr_string() \
                        + "_cd=" + cam_dir.repr_string() + "_cup=" + cam.up.repr_string() + "_spm=" + \
@@ -252,7 +255,8 @@ int sphere_field_demo() {
     ofstream fout(file_dir + file_name);
     if (!fout) {cerr << "Erreur lors de l'ouverture du fichier !"; return 1;}
 
-    cam.render(fout, world);
+    Image image = cam.render(world);
+    image.write_result(fout);
 
     return 0;
 }
@@ -305,7 +309,8 @@ int testLight() {
     cout << file_dir + file_name << "\n";
     if (!fout) {cerr << "Erreur lors de l'ouverture du fichier !"; return 1;}
 
-    cam.render(fout, world);
+    Image image = cam.render(world);
+    image.write_result(fout);
 
     return 0;
 }

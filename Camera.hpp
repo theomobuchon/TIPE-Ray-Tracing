@@ -7,12 +7,13 @@
 
 #include "Hittable.hpp"
 #include <functional>
+#include "Image.hpp"
 
 class Camera {
 public:
     Camera(double ratio, int im_width, const Point3 &center, const Vec3 &look_direction);
     Camera &operator=(const Camera &camera);
-    void render(std::ofstream &fout, const Hittable &world);
+    Image render(const Hittable &world);
 
     Point3 center; // Center of the camera
     Vec3 look_direction; // The direction in which the calera is oriented
@@ -34,13 +35,14 @@ public:
 
 protected:
     void initialize();
+    void partial_render(Image& image, const Hittable &world, int start_i, int end_i, int start_j, int end_j) const;
+    void show_progression(bool reset=false) const;
     [[nodiscard]] Color ray_color(const Ray &ray, int depth, const Hittable &world) const;
     [[nodiscard]] Ray getRay(int x, int y) const;
     [[nodiscard]] static Vec3 sample_square();
     [[nodiscard]] Vec3 random_in_defocus_disk() const;
-    [[nodiscard]] Color partial_color(const Hittable &world, int i, int j, int nb_iterations) const;
 
-    double m_im_height{};
+    int m_im_height{};
     Vec3 m_u, m_v, m_w;
     Point3 m_pix00;
     Vec3 m_du_viewport;
