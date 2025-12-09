@@ -4,7 +4,7 @@
 
 #include "BVH_node.hpp"
 #include <algorithm>
-#include <assert.h>
+#include <cassert>
 
 #include "Raytracer.hpp"
 #include <iostream>
@@ -14,9 +14,9 @@ BVH_node::BVH_node(Hittable_list h_list): BVH_node(h_list.m_objects, 0, h_list.m
 BVH_node::BVH_node(std::vector<std::shared_ptr<Hittable>> &objects, size_t start, size_t end) {
     const int axis = random_int(0, 2);
 
-    const auto comparator = box_y_compare;//(axis == 0) ? box_x_compare
-                                   //: (axis == 1) ? box_y_compare
-                                   //: box_z_compare;
+    const auto comparator = (axis == 0) ? box_y_compare
+                                   : (axis == 1) ? box_y_compare
+                                   : box_y_compare;
 
     const size_t span = end - start;
 

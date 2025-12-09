@@ -10,7 +10,7 @@
 #include "Hittable_list.hpp"
 #include <memory>
 
-class BVH_node: public Hittable{
+class BVH_node final : public Hittable{
 public:
     explicit BVH_node (Hittable_list h_list);
     BVH_node (std::vector<std::shared_ptr<Hittable>> &objects, size_t start, size_t end);

@@ -30,7 +30,7 @@ inline int random_int(const int min, const int max) {
 }
 
 inline int random_sign() {
-    return real_alea(engine) <= 1/2 ? 1 : -1;
+    return real_alea(engine) <= 1./2 ? 1 : -1;
 }
 
 inline double random_double(const double min, const double max) {

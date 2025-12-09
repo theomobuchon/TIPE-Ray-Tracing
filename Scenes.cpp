@@ -88,7 +88,7 @@ int metalExample() {
     world.add(make_shared<Sphere>(Point3(0.,0.65,0.5), 0.6, material1));
     world.add(make_shared<Sphere>(Point3(+1.3,0.65,0.5), 0.6, material2));
 
-    //world = Hittable_list(make_shared<BVH_node>(world));
+    world = Hittable_list(make_shared<BVH_node>(world));
 
     double im_ratio = 1.;
     int im_width = 512;
@@ -250,7 +250,6 @@ int sphere_field_demo() {
                        clean_string(cam.v_fov) + "_da=" + clean_string(cam.defocus_angle) + "_fd=" + \
                        clean_string(cam.focus_dist) + "_" + im_title + ".ppm";
     ofstream fout(file_dir + file_name);
-    cout << file_dir + file_name << "\n";
     if (!fout) {cerr << "Erreur lors de l'ouverture du fichier !"; return 1;}
 
     cam.render(fout, world);
