@@ -16,7 +16,7 @@ class Hit_record {
 public:
     Point3 m_p;
     Vec3 m_normal;
-    shared_ptr<Material> m_material;
+    std::shared_ptr<Material> m_material;
     double m_t;
     bool m_front_face;
 

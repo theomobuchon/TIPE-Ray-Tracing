@@ -184,17 +184,6 @@ ostream &operator<<(ostream &os, const Vec3 &e) {
     return os;
 }
 
-void write_color(std::ofstream &fout, const Color &color) {
-    static const Interval intensity(0., 0.999);
-    const double x = linear_to_gamma(color.x());
-    const double y = linear_to_gamma(color.y());
-    const double z = linear_to_gamma(color.z());
-    const int red_byte = static_cast<int>(256 * intensity.clamp(x));
-    const int green_byte = static_cast<int>(256 * intensity.clamp(y));
-    const int blue_byte = static_cast<int>(256 * intensity.clamp(z));
-    fout << red_byte << " " << green_byte << " " << blue_byte << std::endl;
-}
-
 inline Vec3 random_in_unit_sphere() {
     const auto x = random_double(-1, 1);
     const auto y_max = sqrt(fabs(1 - x*x));
