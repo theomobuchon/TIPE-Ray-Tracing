@@ -41,7 +41,6 @@ add_executable(TIPE_Ray_Tracing
         Sphere.hpp
         Vec3.cpp
         Vec3.hpp
-        test.cpp
         main.cpp)
 
 target_link_libraries(TIPE_Ray_Tracing glfw ${Vulkan_LIBRARIES})
