@@ -7,17 +7,29 @@
 #include "Ray.cpp"
 #include "Camera.cpp"
 #include "Sphere.cpp"
+#include "Triangle.cpp"
 #include "Material.cpp"
 #include "BVH_node.cpp"
 #include "Hittable_list.cpp"
 #include "AABB.cpp"
+#include "Image.cpp"
 #include <memory>
 #include <string>
+#include <iostream>
 
 string clean_string(const double d) {
     string s = to_string(d);
     s.erase(s.find_last_not_of('0') + 1, string::npos);
     return s;
+}
+
+string name_file(const Camera& cam, const string &im_title) {
+    const int im_height = cam.im_width / static_cast<int>(cam.ratio);
+    return "im_rt_" + to_string(cam.im_width) + "x" + to_string(im_height) + "_cc=" + cam.center.repr_string() \
+                        + "_cd=" + cam.look_direction.repr_string() + "_cup=" + cam.up.repr_string() + "_spm=" + \
+                        clean_string(cam.samples_per_pixel) + "_md=" + clean_string(cam.max_depth) + "_vfov=" + \
+                        clean_string(cam.v_fov) + "_da=" + clean_string(cam.defocus_angle) + "_fd=" + \
+                        clean_string(cam.focus_dist) + "_" + im_title + ".ppm";
 }
 
 Color degradated_background(const Vec3 &ray_direction) {
@@ -39,7 +51,6 @@ int lambertianExample() {
 
     double im_ratio = 1.;
     int im_width = 512;
-    int im_height = im_width / static_cast<int>(im_ratio);
     Point3 cam_center = {0., 0.5, -2.};
     auto cam_dir = Point3(0., 0., 1.);
     Camera cam(im_ratio, im_width, cam_center, cam_dir);
@@ -59,11 +70,7 @@ int lambertianExample() {
 
     string im_title = "LambertianExample";
     string file_dir = "images/";
-    string file_name = "im_rt_" + to_string(im_width) + "x" + to_string(im_height) + "_cc=" + cam_center.repr_string() \
-                        + "_cd=" + cam_dir.repr_string() + "_cup=" + cam.up.repr_string() + "_spm=" + \
-                        clean_string(cam.samples_per_pixel) + "_md=" + clean_string(cam.max_depth) + "_vfov=" + \
-                        clean_string(cam.v_fov) + "_da=" + clean_string(cam.defocus_angle) + "_fd=" + \
-                        clean_string(cam.focus_dist) + "_" + im_title + ".ppm";
+    string file_name = name_file(cam, im_title);
     ofstream fout(file_dir + file_name);
     cout << file_dir + file_name << "\n";
     if (!fout) {cerr << "Erreur lors de l'ouverture du fichier !"; return 1;}
@@ -93,7 +100,6 @@ int metalExample() {
 
     double im_ratio = 1.;
     int im_width = 512;
-    int im_height = im_width / static_cast<int>(im_ratio);
     Point3 cam_center = {0., 0.5, -2.};
     auto cam_dir = Point3(0., 0., 1.);
     Camera cam(im_ratio, im_width, cam_center, cam_dir);
@@ -113,11 +119,7 @@ int metalExample() {
 
     string im_title = "MetalExampleByFuzz(0.8-0.4-0.)vv";
     string file_dir = "images/";
-    string file_name = "im_rt_" + to_string(im_width) + "x" + to_string(im_height) + "_cc=" + cam_center.repr_string() \
-                        + "_cd=" + cam_dir.repr_string() + "_cup=" + cam.up.repr_string() + "_spm=" + \
-                        clean_string(cam.samples_per_pixel) + "_md=" + clean_string(cam.max_depth) + "_vfov=" + \
-                        clean_string(cam.v_fov) + "_da=" + clean_string(cam.defocus_angle) + "_fd=" + \
-                        clean_string(cam.focus_dist) + "_" + im_title + ".ppm";
+    string file_name = name_file(cam, im_title);
     ofstream fout(file_dir + file_name);
     cout << file_dir + file_name << "\n";
     if (!fout) {cerr << "Erreur lors de l'ouverture du fichier !"; return 1;}
@@ -145,7 +147,6 @@ int dielectricExample() {
 
     double im_ratio = 1.;
     int im_width = 512;
-    int im_height = im_width / static_cast<int>(im_ratio);
     Point3 cam_center = {0., 0.5, -2.};
     auto cam_dir = Point3(0., 0., 1.);
     Camera cam(im_ratio, im_width, cam_center, cam_dir);
@@ -165,11 +166,7 @@ int dielectricExample() {
 
     string im_title = "DielectricExamples(air_in_water-shield_of_glass)";
     string file_dir = "images/";
-    string file_name = "im_rt_" + to_string(im_width) + "x" + to_string(im_height) + "_cc=" + cam_center.repr_string() \
-                        + "_cd=" + cam_dir.repr_string() + "_cup=" + cam.up.repr_string() + "_spm=" + \
-                        clean_string(cam.samples_per_pixel) + "_md=" + clean_string(cam.max_depth) + "_vfov=" + \
-                        clean_string(cam.v_fov) + "_da=" + clean_string(cam.defocus_angle) + "_fd=" + \
-                        clean_string(cam.focus_dist) + "_" + im_title + ".ppm";
+    string file_name = name_file(cam, im_title);
     ofstream fout(file_dir + file_name);
     cout << file_dir + file_name << "\n";
     if (!fout) {cerr << "Erreur lors de l'ouverture du fichier !"; return 1;}
@@ -227,7 +224,6 @@ int sphere_field_demo() {
 
     double im_ratio = 1.;
     int im_width = 512;
-    int im_height = im_width / static_cast<int>(im_ratio);
     Point3 cam_center = {13, 2., 3.};
     auto cam_dir = Point3(-13., -2., -3.);
     Camera cam(im_ratio, im_width, cam_center, cam_dir);
@@ -247,11 +243,7 @@ int sphere_field_demo() {
 
     string im_title = "Sphere_field_demo_newp";
     string file_dir = "images/";
-    string file_name = "im_rt_" + to_string(im_width) + "x" + to_string(im_height) + "_cc=" + cam_center.repr_string() \
-                       + "_cd=" + cam_dir.repr_string() + "_cup=" + cam.up.repr_string() + "_spm=" + \
-                       clean_string(cam.samples_per_pixel) + "_md=" + clean_string(cam.max_depth) + "_vfov=" + \
-                       clean_string(cam.v_fov) + "_da=" + clean_string(cam.defocus_angle) + "_fd=" + \
-                       clean_string(cam.focus_dist) + "_" + im_title + ".ppm";
+    string file_name = name_file(cam, im_title);
     ofstream fout(file_dir + file_name);
     if (!fout) {cerr << "Erreur lors de l'ouverture du fichier !"; return 1;}
 
@@ -280,7 +272,6 @@ int testLight() {
 
     double im_ratio = 1.;
     int im_width = 512;
-    int im_height = im_width / static_cast<int>(im_ratio);
     Point3 cam_center = {0., 0.5, -2.};
     auto cam_dir = Point3(0., 0., 1.);
     Camera cam(im_ratio, im_width, cam_center, cam_dir);
@@ -300,11 +291,47 @@ int testLight() {
 
     string im_title = "Light2Examples";
     string file_dir = "images/";
-    string file_name = "im_rt_" + to_string(im_width) + "x" + to_string(im_height) + "_cc=" + cam_center.repr_string() \
-                        + "_cd=" + cam_dir.repr_string() + "_cup=" + cam.up.repr_string() + "_spm=" + \
-                        clean_string(cam.samples_per_pixel) + "_md=" + clean_string(cam.max_depth) + "_vfov=" + \
-                        clean_string(cam.v_fov) + "_da=" + clean_string(cam.defocus_angle) + "_fd=" + \
-                        clean_string(cam.focus_dist) + "_" + im_title + ".ppm";
+    string file_name = name_file(cam, im_title);
+    ofstream fout(file_dir + file_name);
+    cout << file_dir + file_name << "\n";
+    if (!fout) {cerr << "Erreur lors de l'ouverture du fichier !"; return 1;}
+
+    Image image = cam.render(world);
+    image.write_result(fout);
+
+    return 0;
+}
+
+int empty_cornel_box() {
+    auto world = Hittable_list();
+
+    auto mat = make_shared<Lambertian>(Color(0., 0.5, 0.));
+    auto triangle = make_shared<Triangle>(Point3(0,0,1), Point3(1,0,0), Point3(0,1,0), mat);
+
+    world.add(triangle);
+
+    double im_ratio = 1.;
+    int im_width = 512;
+    Point3 cam_center = {0., 0.5, -2.};
+    auto cam_dir = Point3(0., 0., 1.);
+    Camera cam(im_ratio, im_width, cam_center, cam_dir);
+
+    cam.samples_per_pixel = 100;
+    cam.max_depth = 10;
+
+    cam.v_fov = 60;
+    cam.up = Vec3(0,1,0);
+
+    cam.defocus_angle = 0.;
+    cam.focus_dist = 10.;
+
+    cam.parallelism = true;
+
+    cam.background = degradated_background;
+
+    string im_title = "Cornell_box";
+    string file_dir = "images/";
+    string file_name = name_file(cam, im_title);
     ofstream fout(file_dir + file_name);
     cout << file_dir + file_name << "\n";
     if (!fout) {cerr << "Erreur lors de l'ouverture du fichier !"; return 1;}

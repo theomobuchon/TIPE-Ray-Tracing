@@ -2,8 +2,8 @@
 // Created by nolan on 14/10/2025.
 //
 
-#ifndef TIPE_RAY_TRACING_GRAPHICS_H
-#define TIPE_RAY_TRACING_GRAPHICS_H
+#ifndef TIPE_RAY_TRACING_GRAPHICS_HPP
+#define TIPE_RAY_TRACING_GRAPHICS_HPP
 
 #include "Vec3.hpp"
 
@@ -22,4 +22,4 @@ protected:
 };
 
 
-#endif //TIPE_RAY_TRACING_GRAPHICS_H
+#endif //TIPE_RAY_TRACING_GRAPHICS_HPP

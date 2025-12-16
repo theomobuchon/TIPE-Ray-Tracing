@@ -5,10 +5,10 @@
 #include "Camera.hpp"
 
 #include <future>
-
-#include "Interval.cpp"
+#include "Raytracer.hpp"
+#include "Interval.hpp"
 #include "Material.hpp"
-#include "Image.cpp"
+#include "Image.hpp"
 #include <iostream>
 #include <mutex>
 #include <thread>
