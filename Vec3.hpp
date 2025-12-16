@@ -2,8 +2,8 @@
 // Created by nolan on 30/09/2025.
 //
 
-#ifndef TIPE_RAY_TRACING_VEC3_H
-#define TIPE_RAY_TRACING_VEC3_H
+#ifndef TIPE_RAY_TRACING_VEC3_HPP
+#define TIPE_RAY_TRACING_VEC3_HPP
 
 #include <fstream>
 #include <string>
@@ -22,7 +22,7 @@ public:
     Vec3 operator-() const;
     double operator[](int i) const;
     void afficher(std::ostream &os) const;
-    [[nodiscard]] string repr_string() const;
+    [[nodiscard]] std::string repr_string() const;
     [[nodiscard]] double squaredNorm() const;
     [[nodiscard]] double norm() const;
     [[nodiscard]] double x() const;

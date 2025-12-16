@@ -5,14 +5,18 @@
 #include "Camera.hpp"
 
 #include <future>
-
-#include "Interval.cpp"
+#include "Raytracer.hpp"
+#include "Interval.hpp"
 #include "Material.hpp"
+#include "Image.hpp"
 #include <iostream>
+#include <mutex>
 #include <thread>
 #include <memory>
 
 using namespace std;
+
+mutex mtx;
 
 Camera::Camera(const double ratio, const int im_width, const Point3 &center, const Vec3 &look_direction): center(center), look_direction(look_direction), ratio(ratio), im_width(im_width) {}
 
@@ -38,6 +42,8 @@ void Camera::initialize() {
     const auto defocus_radius = focus_dist * tan(degrees_to_radians(defocus_angle / 2));
     m_u_defocus_disk = defocus_radius * m_u;
     m_v_defocus_disk = defocus_radius * m_v;
+
+    show_progression(true);
 }
 
 Color Camera::ray_color(const Ray &ray, const int depth, const Hittable &world) const {
@@ -68,42 +74,53 @@ Ray Camera::getRay(const int x, const int y) const {
     return {ray_origin,  pixel_targeted - ray_origin};
 }
 
-Color Camera::partial_color(const Hittable &world, const int i, const int j, const int nb_iterations) const {
-    auto color = Color(0, 0, 0);
-    for (int sample = 0; sample < nb_iterations; sample++) {
-        Ray ray = getRay(i, j);
-        color += ray_color(ray, max_depth, world);
+void Camera::partial_render(Image &image, const Hittable &world, const int start_i, const int end_i, const int start_j, const int end_j) const {
+    for (int j = start_j; j < end_j; j++) {
+        for (int i = start_i; i < end_i; i++) {
+            auto color = Color(0, 0, 0);
+            for (int sample = 0; sample < samples_per_pixel; sample++) {
+                Ray ray = getRay(i, j);
+                color += ray_color(ray, max_depth, world);
+            }
+            {
+                lock_guard<mutex> lock(mtx);
+                image.write_color(i, j, color / samples_per_pixel);
+                show_progression();
+            }
+
+        }
     }
-    return color;
 }
 
-void Camera::render(ofstream &fout, const Hittable &world) {
+
+void Camera::show_progression(const bool reset) const {
+    static int count = 0;
+    if (reset) count = 0;
+    else if (++count % 1000 == 0) clog << "Processed pixels : " << count << " / " << im_width * m_im_height << endl;
+}
+
+Image Camera::render(const Hittable &world) {
     initialize();
-    fout << "P3\n" << im_width << " " << m_im_height << "\n255\n";
+    Image image(im_width, m_im_height);
 
-    for (int j = 0; j < m_im_height; j++) {
-        for (int i = 0; i < im_width; i++) {
-            Color pixel_color;
-            if (parallelism) {
-                const int nb_thread = static_cast<int>(thread::hardware_concurrency());
-                future<Color> results[nb_thread];
-                for (int k = 0; k < nb_thread; k++) {
-                    results[k] = async(launch::async, &Camera::partial_color, this, ref(world), i, j,
-                                       samples_per_pixel / nb_thread);
-                }
-                pixel_color = partial_color(world, i, j, samples_per_pixel % nb_thread);
-                for (int k = 0; k < nb_thread; k++) {
-                    pixel_color += results[k].get();
-                }
-            }
-            else {
-                pixel_color = partial_color(world, i, j, samples_per_pixel);
-            }
-
-            write_color(fout, pixel_color / samples_per_pixel);
-        }
-        clog << "Lines treated : " << j+1 << "/" << m_im_height << "\n";
+    if (!parallelism) {
+        partial_render(image, world, 0, im_width, 0, m_im_height);
     }
+    else {
+        vector<thread> threads;
+        const int nb_thread = static_cast<int>(thread::hardware_concurrency());
+        const int part_i = im_width / nb_thread;
+        for (int k = 0; k < nb_thread; k++) {
+            threads.emplace_back(&Camera::partial_render, this, ref(image), ref(world), k*part_i, (k+1)*part_i, 0, m_im_height);
+        }
+        partial_render(image, world, nb_thread*part_i, im_width, 0, m_im_height);
+
+        for (int k = 0; k < nb_thread; k++) {
+            threads[k].join();
+        }
+    }
+
+    return image;
 }
 
 Vec3 Camera::sample_square() {
