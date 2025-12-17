@@ -8,14 +8,19 @@
 #include "Camera.cpp"
 #include "Sphere.cpp"
 #include "Triangle.cpp"
+#include "Rectangle.cpp"
 #include "Material.cpp"
 #include "BVH_node.cpp"
 #include "Hittable_list.cpp"
+#include "Interval.cpp"
+#include "Hittable.cpp"
 #include "AABB.cpp"
 #include "Image.cpp"
 #include <memory>
 #include <string>
 #include <iostream>
+
+#include "Rectangle.hpp"
 
 string clean_string(const double d) {
     string s = to_string(d);
@@ -35,7 +40,11 @@ string name_file(const Camera& cam, const string &im_title) {
 Color degradated_background(const Vec3 &ray_direction) {
     const Vec3 unit_direction = normalised(ray_direction);
     const double a = 0.5*(unit_direction.y() + 1.0);
-    return (1.0-a)*Color(1.0, 1.0, 1.0) + a*Color(0.5, 0.7, 1.0);
+    return (1.0-a)*Color(0, 1.0, 1.0) + a*Color(0.5, 0.7, 1.);
+}
+
+Color white_background(const Vec3 &ray_direction) {
+    return {1., 1., 1.};
 }
 
 int lambertianExample() {
@@ -47,7 +56,7 @@ int lambertianExample() {
     auto material = make_shared<Lambertian>(Color(0.5, 0., 0.5));
     world.add(make_shared<Sphere>(Point3(0, 0.5, 0.5), 0.5, material));
 
-    world = Hittable_list(make_shared<BVH_node>(world));
+    //world = Hittable_list(make_shared<BVH_node>(world));
 
     double im_ratio = 1.;
     int im_width = 512;
@@ -64,11 +73,11 @@ int lambertianExample() {
     cam.defocus_angle = 0.;
     cam.focus_dist = 10.;
 
-    cam.parallelism = false;
+    cam.parallelism = true;
 
     cam.background = degradated_background;
 
-    string im_title = "LambertianExample";
+    string im_title = "LambertianExamplea";
     string file_dir = "images/";
     string file_name = name_file(cam, im_title);
     ofstream fout(file_dir + file_name);
@@ -185,8 +194,8 @@ int sphere_field_demo() {
 
     for (int a = -11; a < 11; a++) {
         for (int b = -11; b < 11; b++) {
-            auto choose_mat = random_double();
-            Point3 center(a + 0.9*random_double(), 0.2, b + 0.9*random_double());
+            auto choose_mat = random_double_uniform();
+            Point3 center(a + 0.9*random_double_uniform(), 0.2, b + 0.9*random_double_uniform());
 
             if ((center - Point3(4, 0.2, 0)).norm() > 0.9) {
                 shared_ptr<Material> sphere_material;
@@ -199,7 +208,7 @@ int sphere_field_demo() {
                 } else if (choose_mat < 0.95) {
                     // metal
                     auto albedo = Color::random(0.5, 1);
-                    auto fuzz = random_double(0, 0.5);
+                    auto fuzz = random_double_uniform(0, 0.5);
                     sphere_material = make_shared<Metal>(albedo, fuzz);
                     world.add(make_shared<Sphere>(center, 0.2, sphere_material));
                 } else {
@@ -305,21 +314,30 @@ int testLight() {
 int empty_cornel_box() {
     auto world = Hittable_list();
 
-    auto mat = make_shared<Lambertian>(Color(0., 0.5, 0.));
-    auto triangle = make_shared<Triangle>(Point3(0,0,1), Point3(1,0,0), Point3(0,1,0), mat);
+    // Materials
+    auto red = make_shared<Lambertian>(Color(0.65, 0.05, 0.05));
+    auto white = make_shared<Lambertian>(Color(0.73, 0.73, 0.73));
+    auto green = make_shared<Lambertian>(Color(0.12, 0.45, 0.15));
+    auto light = make_shared<Diffuse_light>(Color(1.0, 1.0, 1.0));
 
-    world.add(triangle);
+    // Objects
+    world.add(make_shared<Rectangle>(Point3(555,0,0), Vec3(0,555,0), Vec3(0,0,555), green));
+    world.add(make_shared<Rectangle>(Point3(0,0,0), Vec3(0,555,0), Vec3(0,0,555), red));
+    world.add(make_shared<Rectangle>(Point3(388, 554, 359), Vec3(-195,0,0), Vec3(0,0,-158), light));
+    world.add(make_shared<Rectangle>(Point3(0,0,0), Vec3(555,0,0), Vec3(0,0,555), white));
+    world.add(make_shared<Rectangle>(Point3(555,555,555), Vec3(-555,0,0), Vec3(0,0,-555), white));
+    world.add(make_shared<Rectangle>(Point3(0,0,555), Vec3(555,0,0), Vec3(0,555,0), white));
 
     double im_ratio = 1.;
     int im_width = 512;
-    Point3 cam_center = {0., 0.5, -2.};
-    auto cam_dir = Point3(0., 0., 1.);
+    Point3 cam_center = {278, 278, -800};
+    auto cam_dir = Point3(0., 0., 800);
     Camera cam(im_ratio, im_width, cam_center, cam_dir);
 
-    cam.samples_per_pixel = 100;
-    cam.max_depth = 10;
+    cam.samples_per_pixel = 1000;
+    cam.max_depth = 50;
 
-    cam.v_fov = 60;
+    cam.v_fov = 35;
     cam.up = Vec3(0,1,0);
 
     cam.defocus_angle = 0.;
@@ -327,9 +345,9 @@ int empty_cornel_box() {
 
     cam.parallelism = true;
 
-    cam.background = degradated_background;
+    //cam.background = white_background;
 
-    string im_title = "Cornell_box";
+    string im_title = "Cornell_box_b";
     string file_dir = "images/";
     string file_name = name_file(cam, im_title);
     ofstream fout(file_dir + file_name);

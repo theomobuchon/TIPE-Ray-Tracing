@@ -32,7 +32,9 @@ add_executable(TIPE_Ray_Tracing
         Vec3.hpp
         main.cpp
         Triangle.cpp
-        Triangle.hpp)
+        Triangle.hpp
+        Rectangle.cpp
+        Rectangle.hpp)
 
 target_include_directories(TIPE_Ray_Tracing PRIVATE C:/VulkanSDK/1.4.328.1)
 

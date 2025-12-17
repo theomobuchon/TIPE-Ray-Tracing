@@ -28,10 +28,10 @@ public:
     double defocus_angle = 0; // Variation angle of rays through each pixel of the image
     double focus_dist = 10; // The distance from camera where the focus is perfect
 
-    bool parallelism = false; // To switch on/off the parallelism
+    bool parallelism = true; // To switch on/off the parallelism
 
     std::function<Color(Vec3)> background =
-        [](Vec3) {return Color(0., 0., 0.1);}; // Set the background color of the scene
+        [](Vec3) {return Color(0., 0., 0.);}; // Set the background color of the scene
 
 protected:
     void initialize();
