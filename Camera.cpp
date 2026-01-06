@@ -124,7 +124,7 @@ Image Camera::render(const Hittable &world) {
 }
 
 Vec3 Camera::sample_square() {
-    return {random_double() - 0.5, random_double() - 0.5, 0};
+    return {random_double_uniform() - 0.5, random_double_uniform() - 0.5, 0};
 }
 
 Vec3 Camera::random_in_defocus_disk() const {

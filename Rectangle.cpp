@@ -2,14 +2,14 @@
 // Created by nolan on 16/12/2025.
 //
 
-#include "Triangle.hpp"
+#include "Rectangle.hpp"
 
-Triangle::Triangle(const Point3 &origin, const Vec3 &u, const Vec3 &v, const std::shared_ptr<Material>& material): m_origin(origin), m_u(u), m_v(v), m_material(material) {
+Rectangle::Rectangle(const Point3 &origin, const Vec3 &u, const Vec3 &v, const std::shared_ptr<Material> &material): m_origin(origin), m_u(u), m_v(v), m_material(material) {
     m_normal = normalised(p_vect(u, v));
     m_bbox = AABB(origin + m_normal * 0.001, origin + u + v - m_normal * 0.001);
 }
 
-bool Triangle::hit(const Ray &ray, Interval int_valid, Hit_record &rec) const {
+bool Rectangle::hit(const Ray &ray, Interval int_valid, Hit_record &rec) const {
     const Vec3 h = p_vect(ray.direction(), m_v);
     const double a = p_scal(m_u, h);
     if (a == 0) return false;
@@ -20,7 +20,7 @@ bool Triangle::hit(const Ray &ray, Interval int_valid, Hit_record &rec) const {
 
     const Vec3 q = p_vect(s, m_u);
     const double v = p_scal(ray.direction(), q) / a;
-    if (v < 0 or v > 1 - u) return false;
+    if (v < 0 or v > 1) return false;
 
     rec.m_t = -p_scal(p_vect(s, m_v), m_u) / a;
     rec.m_p = m_origin + u * m_u + v * m_v;
@@ -29,8 +29,6 @@ bool Triangle::hit(const Ray &ray, Interval int_valid, Hit_record &rec) const {
     return int_valid.contains(rec.m_t);
 }
 
-Triangle & Triangle::operator=(const Triangle &triangle) = default;
-
-AABB Triangle::bounding_box() const {
+AABB Rectangle::bounding_box() const {
     return m_bbox;
 }

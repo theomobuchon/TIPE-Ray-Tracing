@@ -124,11 +124,11 @@ bool Vec3::near_zero() const {
 
 
 Vec3 Vec3::random() {
-    return {random_double(), random_double(), random_double()};
+    return {random_double_uniform(), random_double_uniform(), random_double_uniform()};
 }
 
 Vec3 Vec3::random(const double min, const double max) {
-    return {random_double(min, max), random_double(min, max), random_double(min, max)};
+    return {random_double_uniform(min, max), random_double_uniform(min, max), random_double_uniform(min, max)};
 }
 
 Vec3 operator+(const Vec3 &e1, const Vec3 &e2) {
@@ -185,11 +185,10 @@ ostream &operator<<(ostream &os, const Vec3 &e) {
 }
 
 inline Vec3 random_in_unit_sphere() {
-    const auto x = random_double(-1, 1);
-    const auto y_max = sqrt(fabs(1 - x*x));
-    const auto y = random_double(-y_max, +y_max);
-    const auto z = random_sign()*sqrt(fabs(1 - x*x - y*y));
-    return {x, y, z};
+    const auto x = random_double_gaussian();
+    const auto y = random_double_gaussian();
+    const auto z = random_double_gaussian();
+    return normalised(Vec3(x, y, z));
 }
 
 inline Vec3 random_on_hemisphere(const Vec3 &normal) {
@@ -199,10 +198,9 @@ inline Vec3 random_on_hemisphere(const Vec3 &normal) {
 }
 
 inline Vec3 random_in_unit_disk() {
-    const auto x = random_double(-1, 1);
-    const auto y_max = sqrt(fabs(1 - x*x));
-    const auto y = random_double(-y_max, y_max);
-    return {x, y, 0};
+    const auto x = random_double_gaussian();
+    const auto y = random_double_gaussian();
+    return normalised(Vec3(x, y, 0));
 }
 
 inline double linear_to_gamma(const double linear_component) {
