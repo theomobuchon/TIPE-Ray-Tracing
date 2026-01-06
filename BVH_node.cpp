@@ -67,12 +67,14 @@ BVH_node::BVH_node(
 
     if (object_span == 1) {
         left = right = objects[start];
+        bbox = objects[start]->bounding_box();
         return;
     }
 
     if (object_span == 2) {
         left = objects[start];
         right = objects[start + 1];
+        bbox = AABB(objects[start]->bounding_box(), AABB(objects[start + 1]->bounding_box()));
         return;
     }
 
@@ -84,7 +86,7 @@ BVH_node::BVH_node(
 
     const double extent_x = bbox.axis_interval(0).size();  // Taille selon X
     const double extent_y = bbox.axis_interval(1).size();  // Taille selon Y
-    double extent_z = bbox.axis_interval(2).size();  // Taille selon Z
+    const double extent_z = bbox.axis_interval(2).size();  // Taille selon Z
     
     // Trouver l'axe avec la plus grande étendue
     if (extent_y > extent_x && extent_y > extent_z) {
@@ -103,6 +105,7 @@ BVH_node::BVH_node(
 
     left = make_shared<BVH_node>(objects, start, mid);
     right = make_shared<BVH_node>(objects, mid, end);
+    bbox = AABB(left->bounding_box(), right->bounding_box());
 
 }
 
@@ -110,18 +113,18 @@ BVH_node::BVH_node(
 // === MÉTHODE HIT - PARCOURS DE L'ARBRE BVH ===
 
 
-bool BVH_node::hit(const Ray& ray, Interval ray_t, Hit_record& rec) const {
+bool BVH_node::hit(const Ray& ray, const Interval ray_t, Hit_record& rec) const {
     if (!bbox.hit(ray, ray_t)) {
         return false;
     }
 
-    bool hit_left = left->hit(ray, ray_t, rec);
+    const bool hit_left = left->hit(ray, ray_t, rec);
 
-    Interval right_interval = hit_left 
+    const Interval right_interval = hit_left
         ? Interval(ray_t.min(), rec.m_t)
         : ray_t;
-    
-    bool hit_right = right->hit(ray, right_interval, rec);
+
+    const bool hit_right = right->hit(ray, right_interval, rec);
 
     return hit_left || hit_right;
 }

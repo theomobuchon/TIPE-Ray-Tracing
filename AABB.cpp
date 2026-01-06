@@ -26,6 +26,8 @@ const Interval & AABB::axis_interval(const int n) const {
     return m_z;
 }
 
+// === MÉTHODE HIT - VÉRIFICATION DE L'INTERSECTION AVEC LA AABB ===
+
 bool AABB::hit(const Ray &r, Interval ray_t) const {
     const Point3 &orig = r.origin();
     const Vec3 &dir = r.direction();
@@ -34,16 +36,16 @@ bool AABB::hit(const Ray &r, Interval ray_t) const {
         const Interval &axis = axis_interval(i);
         const double adinv = 1./dir[i];
 
-        auto t0 = (axis.min() - orig[i]) * adinv;
-        auto t1 = (axis.max() - orig[i]) * adinv;
+        const auto t0 = (axis.min() - orig[i]) * adinv;
+        const auto t1 = (axis.max() - orig[i]) * adinv;
 
-        if (t0 > t1) {
+        if (t0 < t1) {
             if (t0 > ray_t.min()) {ray_t.setMin(t0);}
             if (t1 < ray_t.max()) {ray_t.setMax(t1);}
         }
         else {
             if (t1 > ray_t.min()) {ray_t.setMin(t1);}
-            if (t0 > ray_t.max()) {ray_t.setMax(t0);}
+            if (t0 < ray_t.max()) {ray_t.setMax(t0);}
         }
 
         if (ray_t.max() <= ray_t.min()) {return false;}

@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 4.0)
 project(TIPE_Ray_Tracing)
 
+
 include(FetchContent)
 FETCHCONTENT_DECLARE(GLFW GIT_REPOSITORY https://github.com/glfw/glfw.git)
 FETCHCONTENT_MAKEAVAILABLE(GLFW)

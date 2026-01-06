@@ -38,7 +38,8 @@ void Image::write_result(std::ofstream &fout) const {
             const int green_byte = static_cast<int>(256 * intensity.clamp(y));
             const int blue_byte = static_cast<int>(256 * intensity.clamp(z));
 
-            fout << red_byte << " " << green_byte << " " << blue_byte << std::endl;
+            fout << red_byte << " " << green_byte << " " << blue_byte << endl;
+            if (!fout) {cerr << "Error while wrinting result" << endl; exit(1);}
         }
     }
 }
