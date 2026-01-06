@@ -10,15 +10,15 @@ using namespace std;
 // Calcule la boîte englobante de tous les objets entre start et end
 AABB BVH_node::bounding_box_of_objects(
     const vector<shared_ptr<Hittable>>& objects,
-    size_t start, 
-    size_t end
+    const size_t start,
+    const size_t end
 ) {
     // Commence avec la boîte du premier objet
     AABB temp_box = objects[start]->bounding_box();
     
     // Fusionne avec toutes les autres boîtes
     for (size_t i = start + 1; i < end; i++) {
-        temp_box = AABB::surrounding_box(temp_box, objects[i]->bounding_box());
+        temp_box = AABB(temp_box, objects[i]->bounding_box());
     }
     
     return temp_box;
@@ -81,10 +81,10 @@ BVH_node::BVH_node(
 
 
     int axis = 0;  // Par défaut X
-    
-    double extent_x = bbox.size(0);  // Taille selon X
-    double extent_y = bbox.size(1);  // Taille selon Y
-    double extent_z = bbox.size(2);  // Taille selon Z
+
+    const double extent_x = bbox.axis_interval(0).size();  // Taille selon X
+    const double extent_y = bbox.axis_interval(1).size();  // Taille selon Y
+    double extent_z = bbox.axis_interval(2).size();  // Taille selon Z
     
     // Trouver l'axe avec la plus grande étendue
     if (extent_y > extent_x && extent_y > extent_z) {

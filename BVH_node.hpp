@@ -6,7 +6,7 @@
 #include <vector>
 #include <memory>
 
-class BVH_node : public Hittable {
+class BVH_node final : public Hittable {
 public:
     // Constructeur : construit l'arbre BVH de manière récursive
     BVH_node(std::vector<std::shared_ptr<Hittable>>& objects, size_t start, size_t end);
@@ -19,7 +19,7 @@ public:
     bool hit(const Ray& ray, Interval ray_t, Hit_record& rec) const override;
     
     // Retourne la boîte englobante de ce nœud
-    AABB bounding_box() const override;
+    [[nodiscard]] AABB bounding_box() const override;
 
 private:
     // Les deux enfants du nœud
