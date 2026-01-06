@@ -18,6 +18,8 @@ public:
     [[nodiscard]] bool surrounds(double value) const;
     [[nodiscard]] double clamp(double value) const;
     [[nodiscard]] double size() const;
+    [[nodiscard]] double center() const;
+    static Interval merge(const Interval &i1, const Interval &i2);
     void setMin(double min);
     void setMax(double max);
 

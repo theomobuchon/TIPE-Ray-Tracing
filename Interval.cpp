@@ -12,7 +12,7 @@ Interval::Interval(): m_min(+infinite), m_max(-infinite) {
 
 }
 
-Interval::Interval(double min, double max) : m_min(min), m_max(max) {
+Interval::Interval(const double min, const double max) : m_min(min), m_max(max) {
 
 }
 
@@ -38,6 +38,16 @@ double Interval::max() const {
 
 double Interval::size() const {
     return m_max - m_min;
+}
+
+double Interval::center() const {
+    return m_min + (m_max - m_min) / 2;
+}
+
+Interval Interval::merge(const Interval &i1, const Interval &i2) {
+    const double min = i1.min() <= i2.min() ? i1.min() : i2.min();
+    const double max = i1.max() >= i2.max() ? i1.max() : i2.max();
+    return {min, max};
 }
 
 void Interval::setMin(const double min) {
