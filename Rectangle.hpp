@@ -7,7 +7,7 @@
 
 #include "Hittable.hpp"
 
-class Rectangle: public Hittable {
+class Rectangle final : public Hittable {
 public:
     Rectangle(const Point3 &origin, const Vec3 &u, const Vec3 &v, const std::shared_ptr<Material>& material);
     Rectangle &operator=(const Rectangle &r) = default;

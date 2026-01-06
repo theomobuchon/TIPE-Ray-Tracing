@@ -9,10 +9,10 @@
 class BVH_node final : public Hittable {
 public:
     // Constructeur : construit l'arbre BVH de manière récursive
-    BVH_node(std::vector<std::shared_ptr<Hittable>>& objects, size_t start, size_t end);
+    BVH_node(std::vector<std::shared_ptr<Hittable>> objects, size_t start, size_t end);
 
     // Constructeur explicite pour construire depuis toute la liste
-    explicit BVH_node(std::vector<std::shared_ptr<Hittable>>& objects)
+    explicit BVH_node(std::vector<std::shared_ptr<Hittable>> objects)
         : BVH_node(objects, 0, objects.size()) {}
 
     // Teste l'intersection avec un rayon

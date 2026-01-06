@@ -8,33 +8,21 @@ FETCHCONTENT_DECLARE(GLM GIT_REPOSITORY https://github.com/g-truc/glm)
 FETCHCONTENT_MAKEAVAILABLE(GLM)
 
 add_executable(TIPE_Ray_Tracing
-        AABB.cpp
-        AABB.hpp
-        BVH_node.cpp
-        BVH_node.hpp
-        Camera.cpp
-        Camera.hpp
-        Hittable.cpp
-        Hittable.hpp
-        Hittable_list.cpp
-        Hittable_list.hpp
-        Interval.cpp
-        Interval.hpp
-        Material.cpp
-        Material.hpp
-        Ray.cpp
-        Ray.hpp
-        Raytracer.hpp
-        Scenes.cpp
-        Sphere.cpp
-        Sphere.hpp
-        Vec3.cpp
-        Vec3.hpp
         main.cpp
-        Triangle.cpp
-        Triangle.hpp
+        Vec3.cpp
+        Scenes.cpp
+        AABB.cpp
+        BVH_node.cpp
+        Camera.cpp
+        Hittable.cpp
+        Hittable_list.cpp
+        Image.cpp
+        Interval.cpp
+        Material.cpp
+        Ray.cpp
         Rectangle.cpp
-        Rectangle.hpp)
+        Sphere.cpp
+        Triangle.cpp)
 
 target_include_directories(TIPE_Ray_Tracing PRIVATE C:/VulkanSDK/1.4.328.1)
 

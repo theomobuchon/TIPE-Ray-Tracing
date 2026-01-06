@@ -3,7 +3,6 @@
 //
 
 #include "Camera.hpp"
-
 #include <future>
 #include "Raytracer.hpp"
 #include "Interval.hpp"

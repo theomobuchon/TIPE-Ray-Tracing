@@ -18,6 +18,7 @@ public:
     Hittable_list();
     explicit Hittable_list(const std::shared_ptr<Hittable> &object);
     Hittable_list &operator=(const Hittable_list &hittable_list);
+    std::vector<std::shared_ptr<Hittable>> objects();
     void add(const std::shared_ptr<Hittable> &object);
     void clear();
     bool hit(const Ray &ray, Interval int_valid, Hit_record &rec) const override;

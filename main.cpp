@@ -1,6 +1,6 @@
 #include <chrono>
 #include <iostream>
-#include "Scenes.cpp"
+#include "Scenes.hpp"
 
 using namespace std;
 
@@ -26,7 +26,7 @@ int main() {
     const auto start = chrono::high_resolution_clock::now();
 
     int out;
-    switch(5) {
+    switch(3) {
         case 0: out = lambertianExample(); break;
         case 1: out = dielectricExample(); break;
         case 2: out = metalExample(); break;

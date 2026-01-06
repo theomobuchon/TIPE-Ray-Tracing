@@ -11,7 +11,8 @@ using namespace std;
 Image::Image(const int im_width, const int im_height) : m_im_width(im_width), m_im_height(im_height) {
     for (int i = 0; i < im_width; i++) {
         vector<Color> colors;
-        for (int j = 0; j < im_height; j++) {
+        colors.reserve(im_height);
+for (int j = 0; j < im_height; j++) {
             colors.emplace_back();
         }
         m_pixels.emplace_back(colors);

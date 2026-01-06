@@ -54,12 +54,12 @@ bool BVH_node::box_z_compare(const shared_ptr<Hittable>& a, const shared_ptr<Hit
 // === CONSTRUCTEUR - ALGORITHME RÉCURSIF DE CONSTRUCTION DU BVH ===
 
 BVH_node::BVH_node(
-    vector<shared_ptr<Hittable>>& objects,
+    vector<shared_ptr<Hittable>> objects,
     size_t start,
     size_t end
 ) {
-    
-    size_t object_span = end - start;
+
+    const size_t object_span = end - start;
 
 
     // === CAS DE BASE : 1 ou 2 objets ===
@@ -93,7 +93,7 @@ BVH_node::BVH_node(
         axis = 2;  // Z est le plus étendu
     }
 
-    auto comparator = (axis == 0) ? box_x_compare
+    const auto comparator = (axis == 0) ? box_x_compare
                     : (axis == 1) ? box_y_compare
                                   : box_z_compare;
 

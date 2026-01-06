@@ -1,8 +1,6 @@
 #include "Vec3.hpp"
 #include <iostream>
 #include <cmath>
-#include "Interval.hpp"
-#include "Raytracer.hpp"
 
 using namespace std;
 
@@ -182,38 +180,4 @@ Vec3 normalised(const Vec3 &e) {
 ostream &operator<<(ostream &os, const Vec3 &e) {
     e.afficher(os);
     return os;
-}
-
-inline Vec3 random_in_unit_sphere() {
-    const auto x = random_double_gaussian();
-    const auto y = random_double_gaussian();
-    const auto z = random_double_gaussian();
-    return normalised(Vec3(x, y, z));
-}
-
-inline Vec3 random_on_hemisphere(const Vec3 &normal) {
-    Vec3 vec_in_unit_sphere = random_in_unit_sphere();
-    if (p_scal(normal, vec_in_unit_sphere) > 0) return vec_in_unit_sphere;
-    return -vec_in_unit_sphere;
-}
-
-inline Vec3 random_in_unit_disk() {
-    const auto x = random_double_gaussian();
-    const auto y = random_double_gaussian();
-    return normalised(Vec3(x, y, 0));
-}
-
-inline double linear_to_gamma(const double linear_component) {
-    return sqrt(linear_component);
-}
-
-inline Vec3 reflect(const Vec3 &v, const Vec3 &n) {
-    return v - 2*p_scal(v, n) * n;
-}
-
-inline Vec3 refract(const Vec3 &v, const Vec3 &n, const double eta) {
-    const auto cos_teta = fmin(p_scal(-v, n), 1.);
-    const Vec3 r_out_perp = eta * (v + cos_teta * n);
-    const Vec3 r_out_parallel = -sqrt(fabs(1. - r_out_perp.squaredNorm()))*n;
-    return r_out_perp + r_out_parallel;
 }

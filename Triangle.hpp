@@ -7,7 +7,7 @@
 
 #include "Hittable.hpp"
 
-class Triangle: public Hittable {
+class Triangle final : public Hittable {
 public:
     Triangle(const Point3 &origin, const Vec3 &u, const Vec3 &v, const std::shared_ptr<Material>& material);
     bool hit(const Ray &ray, Interval int_valid, Hit_record &rec) const override;
