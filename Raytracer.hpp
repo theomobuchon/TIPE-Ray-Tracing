@@ -17,8 +17,15 @@ inline double degrees_to_radians(const double degree) {
     return degree*pi/180.0;
 }
 
+inline thread_local uint64_t state = 0;
+
+// Initialize RNG state for each thread
+inline void seed_xorshift64(uint64_t seed) {
+    if (seed == 0) seed = 88172645463325252ULL; // avoid zero state
+    state = seed;
+}
+
 inline uint64_t xorshift64() {
-    static uint64_t state = 577231480;
     state ^= state << 13;
     state ^= state >> 7;
     state ^= state << 17;

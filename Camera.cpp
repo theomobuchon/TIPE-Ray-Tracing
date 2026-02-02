@@ -73,7 +73,8 @@ Ray Camera::getRay(const int x, const int y) const {
     return {ray_origin,  pixel_targeted - ray_origin};
 }
 
-void Camera::partial_render(Image &image, const Hittable &world, const int start_i, const int end_i, const int start_j, const int end_j) const {
+void Camera::partial_render(Image &image, const Hittable &world, const int start_i, const int end_i, const int start_j, const int end_j, const int t) const {
+    seed_xorshift64(1234ULL + t * 987654321ULL);
     for (int j = start_j; j < end_j; j++) {
         for (int i = start_i; i < end_i; i++) {
             auto color = Color(0, 0, 0);
@@ -103,16 +104,17 @@ Image Camera::render(const Hittable &world) {
     Image image(im_width, m_im_height);
 
     if (!parallelism) {
-        partial_render(image, world, 0, im_width, 0, m_im_height);
+        partial_render(image, world, 0, im_width, 0, m_im_height, 0);
     }
     else {
         vector<thread> threads;
         const int nb_thread = static_cast<int>(thread::hardware_concurrency());
         const int part_i = im_width / nb_thread;
-        for (int k = 0; k < nb_thread; k++) {
-            threads.emplace_back(&Camera::partial_render, this, ref(image), ref(world), k*part_i, (k+1)*part_i, 0, m_im_height);
+        threads.reserve(nb_thread);
+for (int k = 0; k < nb_thread; k++) {
+            threads.emplace_back(&Camera::partial_render, this, ref(image), ref(world), k*part_i, (k+1)*part_i, 0, m_im_height, k);
         }
-        partial_render(image, world, nb_thread*part_i, im_width, 0, m_im_height);
+        partial_render(image, world, nb_thread*part_i, im_width, 0, m_im_height, nb_thread);
 
         for (int k = 0; k < nb_thread; k++) {
             threads[k].join();

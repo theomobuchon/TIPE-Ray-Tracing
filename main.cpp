@@ -5,10 +5,10 @@
 using namespace std;
 
 int test() {
-    auto f = ofstream("../Bjj", ios::trunc);
-    if (!f) {cerr << "Error when opening" << endl; return 1;}
-
-    f << "tuest" << endl;
+    seed_xorshift64(1);
+    for (int i=100; i>0; i--) {
+        random_double_uniform();
+    }
     return 0;
 }
 
@@ -16,7 +16,7 @@ int main() {
     const auto start = chrono::high_resolution_clock::now();
 
     int out;
-    switch(3) {
+    switch(31) {
         case 0: out = lambertianExample(); break;
         case 1: out = dielectricExample(); break;
         case 2: out = metalExample(); break;
@@ -27,7 +27,7 @@ int main() {
     }
 
     const auto end = chrono::high_resolution_clock::now();
-    const auto duration = chrono::duration_cast<chrono::seconds>(end - start);
+    const auto duration = chrono::duration_cast<chrono::nanoseconds>(end - start);
     cout << "Execution time: " << duration.count() << " seconds" << endl;
 
     return out;

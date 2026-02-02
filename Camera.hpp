@@ -35,7 +35,7 @@ public:
 
 protected:
     void initialize();
-    void partial_render(Image& image, const Hittable &world, int start_i, int end_i, int start_j, int end_j) const;
+    void partial_render(Image& image, const Hittable &world, int start_i, int end_i, int start_j, int end_j, int t) const;
     void show_progression(bool reset=false) const;
     [[nodiscard]] Color ray_color(const Ray &ray, int depth, const Hittable &world) const;
     [[nodiscard]] Ray getRay(int x, int y) const;
