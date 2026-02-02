@@ -6,7 +6,7 @@
 #define TIPE_RAY_TRACING_RAYTRACER_HPP
 
 #include <cmath>
-#include <random>
+#include <cstdint>
 
 using namespace std;
 
@@ -17,37 +17,43 @@ inline double degrees_to_radians(const double degree) {
     return degree*pi/180.0;
 }
 
-inline random_device rd;
-inline mt19937 engine(rd());
+inline uint64_t xorshift64() {
+    static uint64_t state = 577231480;
+    state ^= state << 13;
+    state ^= state >> 7;
+    state ^= state << 17;
 
-inline uniform_real_distribution uniform_distribution(0., 1.);
+    return state;
+}
+
+constexpr uint64_t MAX_UINT64 = UINT64_C(18446744073709551615);
+constexpr uint64_t SHIFT_UINT64 = UINT64_C(9223372036854775808);
 
 inline double random_double_uniform() {
-    return uniform_distribution(engine);
+    return xorshift64()/MAX_UINT64;
 }
 
 inline double random_double_uniform(const double min, const double max) {
     return min + random_double_uniform() * (max - min);
 }
-
-inline uniform_int_distribution uniform_distribution_int(0, 1);
-
 inline int random_int(const int min, const int max) {
-    return min + uniform_distribution_int(engine) * (max - min);
+    return static_cast<int>(random_double_uniform(min, max));
 }
 
 inline int random_sign() {
     return random_double_uniform() <= 1./2 ? 1 : -1;
 }
 
-inline normal_distribution gaussian_distribution(0., 1.);
+inline double random_double_gaussian(const double mean, const double std_deviation) {
+    const double u1 = random_double_uniform();
+    const double u2 = random_double_uniform();
+    const double z0 = sqrt(-2 * log(u1))*cos(2*pi*u2);
 
-inline double random_double_gaussian() {
-    return gaussian_distribution(engine);
+    return mean + std_deviation*z0;
 }
 
-inline double random_double_gaussian(const double mean, const double std_deviation) {
-    return gaussian_distribution(engine)*sqrt(std_deviation) + mean;
+inline double random_double_gaussian() {
+    return random_double_gaussian(0, 1);
 }
 
 #endif //TIPE_RAY_TRACING_RAYTRACER_HPP
