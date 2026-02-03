@@ -249,7 +249,7 @@ int sphere_field_demo() {
     cam.background = white_background;
 
     string im_title = "Sphere_field_demo_newp";
-    string file_dir = "../images/";
+    string file_dir = "images/";
     string file_name = name_file(cam, im_title);
     ofstream fout(file_dir + file_name);
     if (!fout) {cerr << "Erreur lors de l'ouverture du fichier !"<< endl; return 1;}
