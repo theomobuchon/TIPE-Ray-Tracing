@@ -71,12 +71,12 @@ int lambertianExample() {
     cam.defocus_angle = 0.;
     cam.focus_dist = 10.;
 
-    cam.parallelism = true;
+    cam.parallelism = false;
 
     cam.background = degradated_background;
 
     string im_title = "LambertianExample";
-    string file_dir = "../images/";
+    string file_dir = "images/";
     string file_name = name_file(cam, im_title);
     ofstream fout(file_dir + file_name);
     cout << file_dir + file_name << "\n";
@@ -244,7 +244,7 @@ int sphere_field_demo() {
     cam.defocus_angle = 0.2;
     cam.focus_dist = 10.0;
 
-    cam.parallelism = true;
+    cam.parallelism = false;
 
     cam.background = white_background;
 
