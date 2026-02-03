@@ -15,7 +15,7 @@ int main() {
     const auto start = chrono::high_resolution_clock::now();
 
     int out;
-    switch(0) {
+    switch(3) {
         case 0: out = lambertianExample(); break;
         case 1: out = dielectricExample(); break;
         case 2: out = metalExample(); break;
@@ -26,7 +26,7 @@ int main() {
     }
 
     const auto end = chrono::high_resolution_clock::now();
-    const auto duration = chrono::duration_cast<chrono::nanoseconds>(end - start);
+    const auto duration = chrono::duration_cast<chrono::seconds>(end - start);
     cout << "Execution time: " << duration.count() << " seconds" << endl;
 
     return out;
