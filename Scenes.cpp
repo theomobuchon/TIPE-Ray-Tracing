@@ -71,7 +71,7 @@ int lambertianExample() {
     cam.defocus_angle = 0.;
     cam.focus_dist = 10.;
 
-    cam.parallelism = true;
+    cam.parallelism = false;
 
     cam.background = degradated_background;
 
