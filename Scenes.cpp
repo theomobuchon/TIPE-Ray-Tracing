@@ -365,7 +365,7 @@ int test_mesh() {
     auto world = Hittable_list();
 
     auto ground_material = make_shared<Lambertian>(Color(0.5, 0.5, 0.5));
-    world.add(make_shared<Sphere>(Point3(0,-1000,0), 1000, ground_material));
+    world.add(make_shared<Sphere>(Point3(0,-100,0), 100, ground_material));
 
     auto green = make_shared<Lambertian>(Color(0.12, 0.45, 0.15));
 
