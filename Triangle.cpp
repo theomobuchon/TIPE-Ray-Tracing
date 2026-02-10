@@ -9,6 +9,10 @@ Triangle::Triangle(const Point3 &origin, const Vec3 &u, const Vec3 &v, const std
     m_bbox = AABB(origin + m_normal * 0.001, origin + u + v - m_normal * 0.001);
 }
 
+Triangle::Triangle(const Point3 &x, const Point3 &y, const Point3 &z, const Vec3 &normal, const std::shared_ptr<Material> &material): m_origin(x), m_u(y-x), m_v(z-x), m_material(material) {
+    m_normal = normalised(normal);
+}
+
 bool Triangle::hit(const Ray &ray, Interval int_valid, Hit_record &rec) const {
     const Vec3 h = p_vect(ray.direction(), m_v);
     const double a = p_scal(m_u, h);

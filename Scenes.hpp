@@ -18,5 +18,6 @@ int dielectricExample();
 int sphere_field_demo();
 int testLight();
 int empty_cornel_box();
+int test_mesh();
 
 #endif //TIPE_RAY_TRACING_SCENES_HPP

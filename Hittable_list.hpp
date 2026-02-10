@@ -17,9 +17,11 @@ class Hittable_list final : public Hittable {
 public:
     Hittable_list();
     explicit Hittable_list(const std::shared_ptr<Hittable> &object);
+    explicit Hittable_list(const std::vector<std::shared_ptr<Hittable>>& objects);
     Hittable_list &operator=(const Hittable_list &hittable_list);
     std::vector<std::shared_ptr<Hittable>> objects();
     void add(const std::shared_ptr<Hittable> &object);
+    void add(const std::vector<std::shared_ptr<Hittable>> &objects);
     void clear();
     bool hit(const Ray &ray, Interval int_valid, Hit_record &rec) const override;
     [[nodiscard]] AABB bounding_box() const override;

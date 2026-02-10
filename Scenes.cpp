@@ -17,6 +17,7 @@
 #include <memory>
 #include <string>
 #include <iostream>
+#include "MeshReader.hpp"
 
 using namespace std;
 
@@ -354,6 +355,54 @@ int empty_cornel_box() {
     cout << file_dir + file_name << "\n";
     if (!fout) {cerr << "Erreur lors de l'ouverture du fichier !"; return 1;}
 
+    Image image = cam.render(world);
+    image.write_result(fout);
+
+    return 0;
+}
+
+int test_mesh() {
+    auto world = Hittable_list();
+
+    auto ground_material = make_shared<Lambertian>(Color(0.5, 0.5, 0.5));
+    world.add(make_shared<Sphere>(Point3(0,-1000,0), 1000, ground_material));
+
+    auto green = make_shared<Lambertian>(Color(0.12, 0.45, 0.15));
+
+    auto mesh = MeshReader("../meshs/king.obj", green);
+    cout << "Conversion of the mesh to an Hittable_list" << endl;
+    world.add(mesh.convert());
+
+    cout << "Initialisation of the BVH structure" << endl;
+    world = Hittable_list(make_shared<BVH_node>(world.objects()));
+
+    cout << "Setting up the camera..." << endl;
+    double im_ratio = 1.;
+    int im_width = 512;
+    Point3 cam_center = {7, 5, -7};
+    auto cam_dir = Point3(-7, -5, 7);
+    Camera cam(im_ratio, im_width, cam_center, cam_dir);
+
+    cam.samples_per_pixel = 100;
+    cam.max_depth = 50;
+
+    cam.v_fov = 20;
+    cam.up = Vec3(0,1,0);
+
+    cam.defocus_angle = 0.;
+    cam.focus_dist = 10.;
+
+    cam.parallelism = true;
+
+    cam.background = degradated_background;
+
+    string im_title = "Test_mesh";
+    string file_dir = "../images/";
+    string file_name = name_file(cam, im_title);
+    ofstream fout(file_dir + file_name);
+    if (!fout) {cerr << "Erreur lors de l'ouverture du fichier !"; return 1;}
+
+    cout << "Rendering phase" << endl;
     Image image = cam.render(world);
     image.write_result(fout);
 

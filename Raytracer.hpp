@@ -7,6 +7,7 @@
 
 #include <cmath>
 #include <random>
+#include <sstream>
 
 using namespace std;
 
@@ -48,6 +49,17 @@ inline double random_double_gaussian() {
 
 inline double random_double_gaussian(const double mean, const double std_deviation) {
     return gaussian_distribution(engine)*sqrt(std_deviation) + mean;
+}
+
+inline std::vector<std::string> splitString(const std::string& str, const char delimiter) {
+    std::vector<std::string> tokens;
+    std::stringstream ss(str);
+    std::string token;
+
+    while (std::getline(ss, token, delimiter)) {
+        tokens.push_back(token);
+    }
+    return tokens;
 }
 
 #endif //TIPE_RAY_TRACING_RAYTRACER_HPP

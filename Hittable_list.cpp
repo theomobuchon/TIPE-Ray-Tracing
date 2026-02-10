@@ -12,6 +12,10 @@ Hittable_list::Hittable_list(const shared_ptr<Hittable> &object) {
     add(object);
 }
 
+Hittable_list::Hittable_list(const std::vector<std::shared_ptr<Hittable>> &objects) {
+    add(objects);
+}
+
 Hittable_list &Hittable_list::operator=(const Hittable_list &hittable_list) = default;
 
 std::vector<std::shared_ptr<Hittable>> Hittable_list::objects() {
@@ -21,6 +25,12 @@ std::vector<std::shared_ptr<Hittable>> Hittable_list::objects() {
 void Hittable_list::add(const shared_ptr<Hittable> &object) {
     m_objects.push_back(object);
     m_bbox = AABB(m_bbox, object->bounding_box());
+}
+
+void Hittable_list::add(const std::vector<std::shared_ptr<Hittable>> &objects) {
+    for (auto &object : objects) {
+        add(object);
+    }
 }
 
 void Hittable_list::clear() {

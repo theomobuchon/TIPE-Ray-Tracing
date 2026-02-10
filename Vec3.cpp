@@ -38,7 +38,7 @@ Vec3 &Vec3::operator*=(double lamb) {
 
 Vec3 &Vec3::operator/=(double lamb) {
     if (lamb == 0) {
-        cout << "Erreur : division d'un vec3 par 0" << endl;
+        cout << "Erreur : division d'un Vec3 par 0" << endl;
     }
     m_x /= lamb;
     m_y /= lamb;
