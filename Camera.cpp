@@ -45,23 +45,32 @@ void Camera::initialize() {
     show_progression(true);
 }
 
-Color Camera::ray_color(const Ray &ray, const int depth, const Hittable &world) const {
+array<double, 3> Camera::ray_color(const Ray &ray, const int depth, const Hittable &world) const {
     if (depth <= 0) { return {0, 0, 0};}
 
     Hit_record rec;
     if (!world.hit(ray, Interval(0.001, infinite), rec)) {
-        return background(ray.direction());
+        auto c = background(ray.direction());
+        return {c.x(), c.y(), c.z()};
     }
 
     Ray scattered_ray;
     Color attenuation;
-    Color emitted = rec.m_material->emitted();
+    const Color emitted = rec.m_material->emitted();
 
     if (!rec.m_material->scatter(ray, rec, attenuation, scattered_ray)) {
-        return emitted;
+        return {emitted.x(), emitted.y(), emitted.z()};
     }
 
-    return emitted + attenuation * ray_color(scattered_ray, depth - 1, world);
+    double tab[3];
+    tab[0] = emitted.x();
+    tab[1] = emitted.y();
+    tab[2] = emitted.z();
+    auto next = ray_color(scattered_ray, depth, world);
+    tab[0] += next[0] * attenuation.x();
+    tab[1] += next[1] * attenuation.y();
+    tab[2] += next[2] * attenuation.z();
+    return {tab[0], tab[1], tab[2]};
 }
 
 Camera &Camera::operator=(const Camera &camera) = default;
@@ -73,14 +82,22 @@ Ray Camera::getRay(const int x, const int y) const {
     return {ray_origin,  pixel_targeted - ray_origin};
 }
 
+
 void Camera::partial_render(Image &image, const Hittable &world, const int start_i, const int end_i, const int start_j, const int end_j) const {
+    // parallel loop collapse(2)
     for (int j = start_j; j < end_j; j++) {
         for (int i = start_i; i < end_i; i++) {
-            auto color = Color(0, 0, 0);
+            double x = 0;
+            double y = 0;
+            double z = 0;
             for (int sample = 0; sample < samples_per_pixel; sample++) {
                 Ray ray = getRay(i, j);
-                color += ray_color(ray, max_depth, world);
+                auto color = ray_color(ray, max_depth, world);
+                x += color[0];
+                y += color[1];
+                z += color[2];
             }
+            Color color = {x, y, z};
             {
                 lock_guard<mutex> lock(mtx);
                 image.write_color(i, j, color / samples_per_pixel);

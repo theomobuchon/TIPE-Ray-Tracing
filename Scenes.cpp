@@ -55,7 +55,7 @@ int lambertianExample() {
     auto material = make_shared<Lambertian>(Color(0.5, 0., 0.5));
     world.add(make_shared<Sphere>(Point3(0, 0.5, 0.5), 0.5, material));
 
-    world = Hittable_list(make_shared<BVH_node>(world.objects()));
+    //world = Hittable_list(make_shared<BVH_node>(world.objects()));
 
     double im_ratio = 1.;
     int im_width = 512;
@@ -72,7 +72,7 @@ int lambertianExample() {
     cam.defocus_angle = 0.;
     cam.focus_dist = 10.;
 
-    cam.parallelism = false;
+    cam.parallelism = true;
 
     cam.background = degradated_background;
 

@@ -19,6 +19,7 @@ for (int j = 0; j < im_height; j++) {
     }
 }
 
+// routine seq
 void Image::write_color(const int i, const int j, const Color &color){
     m_pixels.at(i).at(j) = color;
 }
