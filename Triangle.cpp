@@ -11,6 +11,7 @@ Triangle::Triangle(const Point3 &origin, const Vec3 &u, const Vec3 &v, const std
 
 Triangle::Triangle(const Point3 &x, const Point3 &y, const Point3 &z, const Vec3 &normal, const std::shared_ptr<Material> &material): m_origin(x), m_u(y-x), m_v(z-x), m_material(material) {
     m_normal = normalised(normal);
+    m_bbox = AABB(m_origin + m_normal * 0.001, m_origin + m_u + m_v - m_normal * 0.001);
 }
 
 bool Triangle::hit(const Ray &ray, Interval int_valid, Hit_record &rec) const {

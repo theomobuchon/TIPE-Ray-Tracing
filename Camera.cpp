@@ -66,7 +66,7 @@ array<double, 3> Camera::ray_color(const Ray &ray, const int depth, const Hittab
     tab[0] = emitted.x();
     tab[1] = emitted.y();
     tab[2] = emitted.z();
-    auto next = ray_color(scattered_ray, depth, world);
+    auto next = ray_color(scattered_ray, depth - 1, world);
     tab[0] += next[0] * attenuation.x();
     tab[1] += next[1] * attenuation.y();
     tab[2] += next[2] * attenuation.z();
