@@ -77,7 +77,7 @@ int lambertianExample() {
     cam.background = degradated_background;
 
     string im_title = "LambertianExample";
-    string file_dir = "images/";
+    string file_dir = "../images/";
     string file_name = name_file(cam, im_title);
     ofstream fout(file_dir + file_name);
     cout << file_dir + file_name << "\n";
