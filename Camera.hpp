@@ -37,7 +37,7 @@ protected:
     void initialize();
     void partial_render(Image& image, const Hittable &world, int start_i, int end_i, int start_j, int end_j) const;
     void show_progression(bool reset=false) const;
-    [[nodiscard]] array<double, 3> ray_color(const Ray &ray, int depth, const Hittable &world) const;
+    [[nodiscard]] Color ray_color(const Ray &ray, int depth, const Hittable &world) const;
     [[nodiscard]] Ray getRay(int x, int y) const;
     [[nodiscard]] static Vec3 sample_square();
     [[nodiscard]] Vec3 random_in_defocus_disk() const;
