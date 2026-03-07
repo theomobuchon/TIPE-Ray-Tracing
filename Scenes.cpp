@@ -55,16 +55,16 @@ int lambertianExample() {
     auto material = make_shared<Lambertian>(Color(0.5, 0., 0.5));
     world.add(make_shared<Sphere>(Point3(0, 0.5, 0.5), 0.5, material));
 
-    //world = Hittable_list(make_shared<BVH_node>(world.objects()));
+    world = Hittable_list(make_shared<BVH_node>(world.objects()));
 
     double im_ratio = 1.;
-    int im_width = 512;
+    int im_width = 1024;
     Point3 cam_center = {0., 0.5, -2.};
     auto cam_dir = Point3(0., 0., 1.);
     Camera cam(im_ratio, im_width, cam_center, cam_dir);
 
     cam.samples_per_pixel = 100;
-    cam.max_depth = 10;
+    cam.max_depth = 20;
 
     cam.v_fov = 60;
     cam.up = Vec3(0,1,0);
@@ -231,13 +231,13 @@ int sphere_field_demo() {
     world = Hittable_list(make_shared<BVH_node>(world.objects()));
 
     double im_ratio = 1.;
-    int im_width = 512;
+    int im_width = 1024;
     Point3 cam_center = {13, 2., 3.};
     auto cam_dir = Point3(-13., -2., -3.);
     Camera cam(im_ratio, im_width, cam_center, cam_dir);
 
-    cam.samples_per_pixel = 250;
-    cam.max_depth = 50;
+    cam.samples_per_pixel = 1000;
+    cam.max_depth = 10;
 
     cam.v_fov = 20;
     cam.up = Vec3(0,1,0);
@@ -245,12 +245,12 @@ int sphere_field_demo() {
     cam.defocus_angle = 0.2;
     cam.focus_dist = 10.0;
 
-    cam.parallelism = false;
+    cam.parallelism = true;
 
     cam.background = white_background;
 
     string im_title = "Sphere_field_demo_newp";
-    string file_dir = "images/";
+    string file_dir = "../images/";
     string file_name = name_file(cam, im_title);
     ofstream fout(file_dir + file_name);
     if (!fout) {cerr << "Erreur lors de l'ouverture du fichier !"<< endl; return 1;}
@@ -276,7 +276,7 @@ int testLight() {
     auto light_material2 = make_shared<Diffuse_light>(Color(1.0, 0., 0.));
     world.add(make_shared<Sphere>(Point3(-1.2, 1., 0), 0.6, light_material2));
 
-    //world = Hittable_list(make_shared<BVH_node>(world.objects()));
+    world = Hittable_list(make_shared<BVH_node>(world.objects()));
 
     double im_ratio = 1.;
     int im_width = 512;
