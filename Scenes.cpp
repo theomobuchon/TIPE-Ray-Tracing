@@ -52,8 +52,14 @@ int lambertianExample() {
     auto ground_material = make_shared<Lambertian>(Color(0.5, 0.5, 0.5));
     world.add(make_shared<Sphere>(Point3(0,-1000,0), 1000, ground_material));
 
-    auto material = make_shared<Lambertian>(Color(0.5, 0., 0.5));
-    world.add(make_shared<Sphere>(Point3(0, 0.5, 0.5), 0.5, material));
+    auto c1 = Color(0.8, 0.8, 0.8);
+    auto c2 = Color(0.2, 0.2, 0.2);
+    auto material0 = make_shared<Lambertian>(c1);
+    auto material1 = make_shared<Lambertian>(0.5*c1+0.5*c2);
+    auto material2 = make_shared<Lambertian>(c2);
+    world.add(make_shared<Sphere>(Point3(-1.3,0.65,0.5), 0.6, material0));
+    world.add(make_shared<Sphere>(Point3(0.,0.65,0.5), 0.6, material1));
+    world.add(make_shared<Sphere>(Point3(+1.3,0.65,0.5), 0.6, material2));
 
     world = Hittable_list(make_shared<BVH_node>(world.objects()));
 
@@ -64,7 +70,7 @@ int lambertianExample() {
     Camera cam(im_ratio, im_width, cam_center, cam_dir);
 
     cam.samples_per_pixel = 100;
-    cam.max_depth = 20;
+    cam.max_depth = 10;
 
     cam.v_fov = 60;
     cam.up = Vec3(0,1,0);
@@ -72,11 +78,11 @@ int lambertianExample() {
     cam.defocus_angle = 0.;
     cam.focus_dist = 10.;
 
-    cam.parallelism = true;
+    cam.parallelism = false;
 
     cam.background = degradated_background;
 
-    string im_title = "LambertianExample";
+    string im_title = "3LambertiansExample";
     string file_dir = "../images/";
     string file_name = name_file(cam, im_title);
     ofstream fout(file_dir + file_name);
@@ -107,7 +113,7 @@ int metalExample() {
     world = Hittable_list(make_shared<BVH_node>(world.objects()));
 
     double im_ratio = 1.;
-    int im_width = 512;
+    int im_width = 1024;
     Point3 cam_center = {0., 0.5, -2.};
     auto cam_dir = Point3(0., 0., 1.);
     Camera cam(im_ratio, im_width, cam_center, cam_dir);
@@ -121,7 +127,7 @@ int metalExample() {
     cam.defocus_angle = 0.;
     cam.focus_dist = 10.;
 
-    cam.parallelism = true;
+    cam.parallelism = false;
 
     cam.background = degradated_background;
 
