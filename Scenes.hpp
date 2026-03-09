@@ -6,9 +6,8 @@
 #define TIPE_RAY_TRACING_SCENES_HPP
 #include <string>
 #include "Camera.hpp"
-#include "Raytracer.hpp"
 
-std::string clean_string(double d);
+std::string clean_string(float d);
 std::string name_file(const Camera& cam, const std::string &im_title);
 Color degradated_background(const Vec3 &ray_direction);
 Color white_background(const Vec3 &ray_direction);

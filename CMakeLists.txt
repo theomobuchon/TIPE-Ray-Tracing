@@ -18,6 +18,7 @@ add_executable(TIPE_RAYTRACING
         Triangle.cpp
         Vec3.cpp
         MeshReader.cpp
+        Random.hpp
 )
 
 set(CMAKE_CXX_STANDARD 20)

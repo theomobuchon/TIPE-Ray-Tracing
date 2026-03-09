@@ -1,4 +1,5 @@
 #include "Vec3.hpp"
+#include "Random.hpp"
 #include <iostream>
 #include <cmath>
 
@@ -8,7 +9,7 @@ Vec3::Vec3(): m_x(0.0), m_y(0.0), m_z(0.0) {
 
 };
 
-Vec3::Vec3(const double x, const double y, const double z): m_x(x), m_y(y), m_z(z) {
+Vec3::Vec3(const float x, const float y, const float z): m_x(x), m_y(y), m_z(z) {
 
 };
 
@@ -28,7 +29,7 @@ Vec3 &Vec3::operator-=(const Vec3 &other) {
     return *this;
 }
 
-Vec3 &Vec3::operator*=(double lamb) {
+Vec3 &Vec3::operator*=(float lamb) {
     m_x *= lamb;
     m_y *= lamb;
     m_z *= lamb;
@@ -36,7 +37,7 @@ Vec3 &Vec3::operator*=(double lamb) {
     return *this;
 }
 
-Vec3 &Vec3::operator/=(double lamb) {
+Vec3 &Vec3::operator/=(float lamb) {
     if (lamb == 0) {
         cout << "Erreur : division d'un Vec3 par 0" << endl;
     }
@@ -57,28 +58,28 @@ Vec3 Vec3::operator-() const {
     return -1*(*this);
 }
 
-double Vec3::operator[](int i) const {
+float Vec3::operator[](int i) const {
     if (i == 0) {return m_x;}
     if (i == 1) {return m_y;}
     return m_z;
 }
 
-double Vec3::squaredNorm() const {
+float Vec3::squaredNorm() const {
     return m_x * m_x + m_y * m_y + m_z * m_z;
 }
 
-double Vec3::norm() const {
+float Vec3::norm() const {
     return sqrt(squaredNorm());
 }
 
-double Vec3::p_scal(const Vec3 &e) const {
+float Vec3::p_scal(const Vec3 &e) const {
     return m_x*e.m_x + m_y*e.m_y + m_z*e.m_z;
 }
 
 void Vec3::p_vect(const Vec3 &e) {
-    const double x = m_y*e.m_z - e.m_y*m_z;
-    const double y = e.m_x*m_z - m_x*e.m_z;
-    const double z = m_x*e.m_y - e.m_x*m_y;
+    const float x = m_y*e.m_z - e.m_y*m_z;
+    const float y = e.m_x*m_z - m_x*e.m_z;
+    const float z = m_x*e.m_y - e.m_x*m_y;
     m_x = x;
     m_y = y;
     m_z = z;
@@ -99,19 +100,19 @@ string Vec3::repr_string() const {
 }
 
 void Vec3::normalize() {
-    const double n = this -> norm();
+    const float n = this -> norm();
     *this /= n;
 }
 
-double Vec3::x() const {
+float Vec3::x() const {
     return m_x;
 }
 
-double Vec3::y() const {
+float Vec3::y() const {
     return m_y;
 }
 
-double Vec3::z() const {
+float Vec3::z() const {
     return m_z;
 }
 
@@ -121,12 +122,12 @@ bool Vec3::near_zero() const {
 }
 
 
-Vec3 Vec3::random() {
-    return {random_double_uniform(), random_double_uniform(), random_double_uniform()};
+Vec3 Vec3::random(RNG &rng) {
+    return {rng.next_uniform(), rng.next_uniform(), rng.next_uniform()};
 }
 
-Vec3 Vec3::random(const double min, const double max) {
-    return {random_double_uniform(min, max), random_double_uniform(min, max), random_double_uniform(min, max)};
+Vec3 Vec3::random(const float min, const float max, RNG &rng) {
+    return {rng.next_uniform(min, max), rng.next_uniform(min, max), rng.next_uniform(min, max)};
 }
 
 Vec3 operator+(const Vec3 &e1, const Vec3 &e2) {
@@ -141,13 +142,13 @@ Vec3 operator-(const Vec3 &e1, const Vec3 &e2) {
     return e3;
 }
 
-Vec3 operator*(const Vec3 &e, const double lamb) {
+Vec3 operator*(const Vec3 &e, const float lamb) {
     Vec3 e2(e);
     e2 *= lamb;
     return e2;
 }
 
-Vec3 operator*(const double lamb, const Vec3 &e) {
+Vec3 operator*(const float lamb, const Vec3 &e) {
     return e*lamb;
 }
 
@@ -155,13 +156,13 @@ Vec3 operator*(const Vec3 &e1, const Vec3 &e2) {
     return {e1.m_x * e2.m_x, e1.m_y * e2.m_y, e1.m_z * e2.m_z};
 }
 
-Vec3 operator/(const Vec3 &e, const double lamb) {
+Vec3 operator/(const Vec3 &e, const float lamb) {
     Vec3 f(e);
     f /= lamb;
     return f;
 }
 
-double p_scal(const Vec3 &e1, const Vec3 &e2) {
+float p_scal(const Vec3 &e1, const Vec3 &e2) {
     return e1.p_scal(e2);
 }
 

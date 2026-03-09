@@ -12,7 +12,7 @@ public:
     Ray();
     Ray(const Point3 &origin, const Vec3 &direction);
     Ray &operator=(const Ray &ray);
-    [[nodiscard]] Point3 at(double t) const;
+    [[nodiscard]] Point3 at(float t) const;
     [[nodiscard]] Point3 origin() const;
     [[nodiscard]] Vec3 direction() const;
 

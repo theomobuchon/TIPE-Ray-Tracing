@@ -84,9 +84,9 @@ BVH_node::BVH_node(
 
     int axis = 0;  // Par défaut X
 
-    const double extent_x = bbox.axis_interval(0).size();  // Taille selon X
-    const double extent_y = bbox.axis_interval(1).size();  // Taille selon Y
-    const double extent_z = bbox.axis_interval(2).size();  // Taille selon Z
+    const float extent_x = bbox.axis_interval(0).size();  // Taille selon X
+    const float extent_y = bbox.axis_interval(1).size();  // Taille selon Y
+    const float extent_z = bbox.axis_interval(2).size();  // Taille selon Z
     
     // Trouver l'axe avec la plus grande étendue
     if (extent_y > extent_x && extent_y > extent_z) {

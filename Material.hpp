@@ -10,7 +10,7 @@
 class Material {
 public:
     virtual ~Material() = default;
-    virtual bool scatter(const Ray &r_in, Hit_record &rec, Color &attenuation, Ray &scattered) const;
+    virtual bool scatter(const Ray &r_in, Hit_record &rec, Color &attenuation, Ray &scattered, RNG &rng) const;
     [[nodiscard]] virtual Color emitted() const;
 };
 
@@ -18,7 +18,7 @@ class Lambertian final : public Material {
 public:
     explicit Lambertian(const Color &albedo);
 
-    bool scatter(const Ray &r_in, Hit_record &rec, Color &attenuation, Ray &scattered) const override;
+    bool scatter(const Ray &r_in, Hit_record &rec, Color &attenuation, Ray &scattered, RNG &rng) const override;
 
 protected:
     Color m_albedo;
@@ -26,23 +26,23 @@ protected:
 
 class Metal final : public Material {
 public:
-    Metal(const Color &albedo, double fuzz);
+    Metal(const Color &albedo, float fuzz);
 
-    bool scatter(const Ray &r_in, Hit_record &rec, Color &attenuation, Ray &scattered) const override;
+    bool scatter(const Ray &r_in, Hit_record &rec, Color &attenuation, Ray &scattered, RNG &rng) const override;
 
 protected:
     Color m_albedo;
-    double m_fuzz;
+    float m_fuzz;
 };
 
 class Dielectric final : public Material {
 public:
-    explicit Dielectric(double refractive_index);
+    explicit Dielectric(float refractive_index);
 
-    bool scatter(const Ray &r_in, Hit_record &rec, Color &attenuation, Ray &scattered) const override;
+    bool scatter(const Ray &r_in, Hit_record &rec, Color &attenuation, Ray &scattered, RNG &rng) const override;
 
 protected:
-    double m_refractive_index;
+    float m_refractive_index;
 };
 
 class Diffuse_light final : public Material {

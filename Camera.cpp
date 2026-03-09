@@ -11,31 +11,30 @@
 #include <iostream>
 #include <mutex>
 #include <thread>
-#include <memory>
 
 using namespace std;
 
 mutex mtx;
 
-Camera::Camera(const double ratio, const int im_width, const Point3 &center, const Vec3 &look_direction): center(center), look_direction(look_direction), ratio(ratio), im_width(im_width) {}
+Camera::Camera(const float ratio, const int im_width, const Point3 &center, const Vec3 &look_direction): center(center), look_direction(look_direction), ratio(ratio), im_width(im_width) {}
 
 void Camera::initialize() {
     m_w = -normalised(look_direction);
     m_u = normalised(p_vect(up, m_w));
     m_v = p_vect(m_w, m_u);
 
-    m_im_height = static_cast<int>(im_width / ratio);
+    m_im_height = static_cast<int>((float)im_width / ratio);
     const auto theta = degrees_to_radians(v_fov);
     const auto h = tan(theta / 2);
     const auto viewport_height = 2 * h * focus_dist;
-    const auto viewport_width = viewport_height / (m_im_height/static_cast<double>(im_width));
+    const auto viewport_width = viewport_height / ((float)m_im_height/static_cast<float>(im_width));
 
     const auto u_viewport = viewport_width * m_u;
     const auto v_viewport = viewport_height * -m_v;
     const auto origin_viewport = center - u_viewport/2 - v_viewport/2 - focus_dist*m_w;
 
-    m_du_viewport = u_viewport / im_width;
-    m_dv_viewport = v_viewport / m_im_height;
+    m_du_viewport = u_viewport / (float)im_width;
+    m_dv_viewport = v_viewport / (float)m_im_height;
     m_pix00 = origin_viewport + 0.5*m_du_viewport + 0.5*m_dv_viewport;
 
     const auto defocus_radius = focus_dist * tan(degrees_to_radians(defocus_angle / 2));
@@ -45,7 +44,7 @@ void Camera::initialize() {
     show_progression(true);
 }
 
-Color Camera::ray_color(const Ray &ray, const int depth, const Hittable &world) const {
+Color Camera::ray_color(const Ray &ray, const int depth, const Hittable &world, RNG &rng) const {
     if (depth <= 0) { return {0, 0, 0};}
 
     Hit_record rec;
@@ -58,19 +57,19 @@ Color Camera::ray_color(const Ray &ray, const int depth, const Hittable &world) 
     Color attenuation;
     const Color emitted = rec.m_material->emitted();
 
-    if (!rec.m_material->scatter(ray, rec, attenuation, scattered_ray)) {
+    if (!rec.m_material->scatter(ray, rec, attenuation, scattered_ray, rng)) {
         return emitted;
     }
-    const auto next = ray_color(scattered_ray, depth - 1, world);
+    const auto next = ray_color(scattered_ray, depth - 1, world, rng);
     return emitted + next * attenuation;
 }
 
 Camera &Camera::operator=(const Camera &camera) = default;
 
-Ray Camera::getRay(const int x, const int y) const {
-    const auto offset = sample_square();
-    const auto pixel_targeted = m_pix00 + (x + offset.x()) * m_du_viewport + (y + offset.y()) * m_dv_viewport;
-    const auto ray_origin = (defocus_angle <= 0) ? center : random_in_defocus_disk();
+Ray Camera::getRay(const int x, const int y, RNG &rng) const {
+    const auto offset = sample_square(rng);
+    const auto pixel_targeted = m_pix00 + ((float)x + offset.x()) * m_du_viewport + ((float)y + offset.y()) * m_dv_viewport;
+    const auto ray_origin = (defocus_angle <= 0) ? center : random_in_defocus_disk(rng);
     return {ray_origin,  pixel_targeted - ray_origin};
 }
 
@@ -79,14 +78,19 @@ void Camera::partial_render(Image &image, const Hittable &world, const int start
     // parallel loop collapse(2)
     for (int j = start_j; j < end_j; j++) {
         for (int i = start_i; i < end_i; i++) {
+            RNG rng;
+            unsigned int seed = (j * 73856093) ^ (i * 19349663);
+            rng.state = wang_hash(seed);
+            rng.state = wang_hash(rng.state);
+
             Color color;
             for (int sample = 0; sample < samples_per_pixel; sample++) {
-                Ray ray = getRay(i, j);
-                color += ray_color(ray, max_depth, world);
+                Ray ray = getRay(i, j, rng);
+                color += ray_color(ray, max_depth, world, rng);
             }
             {
                 lock_guard<mutex> lock(mtx);
-                image.write_color(i, j, color / samples_per_pixel);
+                image.write_color(i, j, color / (float)samples_per_pixel);
                 show_progression();
             }
 
@@ -112,6 +116,7 @@ Image Camera::render(const Hittable &world) {
         vector<thread> threads;
         const int nb_thread = static_cast<int>(thread::hardware_concurrency());
         const int part_i = im_width / nb_thread;
+        threads.reserve(nb_thread);
         for (int k = 0; k < nb_thread; k++) {
             threads.emplace_back(&Camera::partial_render, this, ref(image), ref(world), k*part_i, (k+1)*part_i, 0, m_im_height);
         }
@@ -125,11 +130,11 @@ Image Camera::render(const Hittable &world) {
     return image;
 }
 
-Vec3 Camera::sample_square() {
-    return {random_double_uniform() - 0.5, random_double_uniform() - 0.5, 0};
+Vec3 Camera::sample_square(RNG &rng) {
+    return {rng.next_uniform() - 0.5f, rng.next_uniform() - 0.5f, 0};
 }
 
-Vec3 Camera::random_in_defocus_disk() const {
-    const auto p = random_in_unit_disk();
+Vec3 Camera::random_in_defocus_disk(RNG &rng) const {
+    const auto p = random_in_unit_disk(rng);
     return center + p.x() * m_u_defocus_disk + p.y() * m_v_defocus_disk;
 }

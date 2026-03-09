@@ -5,6 +5,7 @@
 #include <iostream>
 #include <sstream>
 
+#include "Raytracer.hpp"
 #include "Triangle.hpp"
 
 using namespace std;
@@ -19,13 +20,13 @@ MeshReader::MeshReader(const std::string &source_file, const std::shared_ptr<Mat
             ss >> mode;
 
             if (mode == "v") {
-                double x, y, z;
+                float x, y, z;
                 ss >> x >> y >> z;
                 m_points.emplace_back(x, y, z);
             }
 
             if (mode == "vn") {
-                double x, y, z;
+                float x, y, z;
                 ss >> x >> y >> z;
                 m_normals.emplace_back(x, y, z);
             }
@@ -53,7 +54,6 @@ MeshReader::MeshReader(const std::string &source_file, const std::shared_ptr<Mat
 vector<shared_ptr<Hittable>> MeshReader::convert() const {
     vector<shared_ptr<Hittable>> tr_list;
     tr_list.reserve(m_triangles.size());
-    auto i=0;
     cout << m_normals.size() << endl;
     for (const auto tr_brack: m_triangles) {
         auto s1 = m_points[tr_brack[0]];

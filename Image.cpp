@@ -31,9 +31,9 @@ void Image::write_result(std::ofstream &fout) const {
             Color color = m_pixels.at(i).at(j);
 
             static const Interval intensity(0., 0.999);
-            const double x = linear_to_gamma(color.x());
-            const double y = linear_to_gamma(color.y());
-            const double z = linear_to_gamma(color.z());
+            const float x = linear_to_gamma(color.x());
+            const float y = linear_to_gamma(color.y());
+            const float z = linear_to_gamma(color.z());
 
             const int red_byte = static_cast<int>(256 * intensity.clamp(x));
             const int green_byte = static_cast<int>(256 * intensity.clamp(y));

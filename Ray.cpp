@@ -15,7 +15,7 @@ Ray::Ray(const Point3 &origin, const Vec3 &direction): m_origin(origin), m_dir(d
 
 Ray &Ray::operator=(const Ray &ray) = default;
 
-Vec3 Ray::at(double t) const {
+Vec3 Ray::at(float t) const {
     return m_origin + t * m_dir;
 };
 

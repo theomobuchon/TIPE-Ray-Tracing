@@ -1,6 +1,7 @@
 #include <chrono>
 #include <dinput.h>
 #include <iostream>
+#include "Raytracer.hpp"
 #include "Scenes.hpp"
 
 using namespace std;
@@ -16,7 +17,7 @@ int main() {
     const auto start = chrono::high_resolution_clock::now();
 
     int out;
-    switch(2) {
+    switch(0) {
         case 0: out = lambertianExample(); break;
         case 1: out = dielectricExample(); break;
         case 2: out = metalExample(); break;

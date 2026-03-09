@@ -3,7 +3,6 @@
 //
 
 #include "Scenes.hpp"
-#include "Raytracer.hpp"
 #include "Vec3.hpp"
 #include "Camera.hpp"
 #include "Sphere.hpp"
@@ -21,7 +20,7 @@
 
 using namespace std;
 
-string clean_string(const double d) {
+string clean_string(const float d) {
     string s = to_string(d);
     s.erase(s.find_last_not_of('0') + 1, string::npos);
     return s;
@@ -31,15 +30,15 @@ string name_file(const Camera& cam, const string &im_title) {
     const int im_height = cam.im_width / static_cast<int>(cam.ratio);
     return "im_rt_" + to_string(cam.im_width) + "x" + to_string(im_height) + "_cc=" + cam.center.repr_string() \
                         + "_cd=" + cam.look_direction.repr_string() + "_cup=" + cam.up.repr_string() + "_spm=" + \
-                        clean_string(cam.samples_per_pixel) + "_md=" + clean_string(cam.max_depth) + "_vfov=" + \
+                        clean_string((float)cam.samples_per_pixel) + "_md=" + clean_string((float)cam.max_depth) + "_vfov=" + \
                         clean_string(cam.v_fov) + "_da=" + clean_string(cam.defocus_angle) + "_fd=" + \
                         clean_string(cam.focus_dist) + "_" + im_title + ".ppm";
 }
 
 Color degradated_background(const Vec3 &ray_direction) {
     const Vec3 unit_direction = normalised(ray_direction);
-    const double a = 0.5*(unit_direction.y() + 1.0);
-    return (1.0-a)*Color(0, 1.0, 1.0) + a*Color(0.5, 0.7, 1.);
+    const float a = 0.5f*(unit_direction.y() + 1.0f);
+    return (1.0f-a)*Color(0, 1.0, 1.0) + a*Color(0.5, 0.7, 1.);
 }
 
 Color white_background(const Vec3 &ray_direction) {
@@ -63,7 +62,7 @@ int lambertianExample() {
 
     world = Hittable_list(make_shared<BVH_node>(world.objects()));
 
-    double im_ratio = 1.;
+    float im_ratio = 1.;
     int im_width = 1024;
     Point3 cam_center = {0., 0.5, -2.};
     auto cam_dir = Point3(0., 0., 1.);
@@ -112,7 +111,7 @@ int metalExample() {
 
     world = Hittable_list(make_shared<BVH_node>(world.objects()));
 
-    double im_ratio = 1.;
+    float im_ratio = 1.;
     int im_width = 1024;
     Point3 cam_center = {0., 0.5, -2.};
     auto cam_dir = Point3(0., 0., 1.);
@@ -159,7 +158,7 @@ int dielectricExample() {
 
     world = Hittable_list(make_shared<BVH_node>(world.objects()));
 
-    double im_ratio = 1.;
+    float im_ratio = 1.;
     int im_width = 512;
     Point3 cam_center = {0., 0.5, -2.};
     auto cam_dir = Point3(0., 0., 1.);
@@ -197,23 +196,26 @@ int sphere_field_demo() {
     auto ground_material = make_shared<Lambertian>(Color(0.5, 0.5, 0.5));
     world.add(make_shared<Sphere>(Point3(0,-1000,0), 1000, ground_material));
 
+    RNG rng;
+    rng.state = 4534135;
+
     for (int a = -11; a < 11; a++) {
         for (int b = -11; b < 11; b++) {
-            auto choose_mat = random_double_uniform();
-            Point3 center(a + 0.9*random_double_uniform(), 0.2, b + 0.9*random_double_uniform());
+            auto choose_mat = rng.next_uniform();
+            Point3 center((float)a + 0.9f*rng.next_uniform(), 0.2f, (float)b + 0.9f*rng.next_uniform());
 
-            if ((center - Point3(4, 0.2, 0)).norm() > 0.9) {
+            if ((center - Point3(4, 0.2f, 0)).norm() > 0.9) {
                 shared_ptr<Material> sphere_material;
 
                 if (choose_mat < 0.8) {
                     // diffuse
-                    auto albedo = Color::random() * Color::random();
+                    auto albedo = Color::random(rng) * Color::random(rng);
                     sphere_material = make_shared<Lambertian>(albedo);
                     world.add(make_shared<Sphere>(center, 0.2, sphere_material));
                 } else if (choose_mat < 0.95) {
                     // metal
-                    auto albedo = Color::random(0.5, 1);
-                    auto fuzz = random_double_uniform(0, 0.5);
+                    auto albedo = Color::random(0.5, 1, rng);
+                    auto fuzz = rng.next_uniform(0, 0.5);
                     sphere_material = make_shared<Metal>(albedo, fuzz);
                     world.add(make_shared<Sphere>(center, 0.2, sphere_material));
                 } else {
@@ -236,7 +238,7 @@ int sphere_field_demo() {
 
     world = Hittable_list(make_shared<BVH_node>(world.objects()));
 
-    double im_ratio = 1.;
+    float im_ratio = 1.;
     int im_width = 1024;
     Point3 cam_center = {13, 2., 3.};
     auto cam_dir = Point3(-13., -2., -3.);
@@ -284,7 +286,7 @@ int testLight() {
 
     world = Hittable_list(make_shared<BVH_node>(world.objects()));
 
-    double im_ratio = 1.;
+    float im_ratio = 1.;
     int im_width = 512;
     Point3 cam_center = {0., 0.5, -2.};
     auto cam_dir = Point3(0., 0., 1.);
@@ -335,7 +337,7 @@ int empty_cornel_box() {
 
     world = Hittable_list(make_shared<BVH_node>(world.objects()));
 
-    double im_ratio = 1.;
+    float im_ratio = 1.;
     int im_width = 512;
     Point3 cam_center = {278, 278, -800};
     auto cam_dir = Point3(0., 0., 800);
@@ -383,7 +385,7 @@ int test_mesh() {
     world = Hittable_list(make_shared<BVH_node>(world.objects()));
 
     cout << "Setting up the camera..." << endl;
-    double im_ratio = 1.;
+    float im_ratio = 1.;
     int im_width = 512;
     Point3 cam_center = {7, 5, -7};
     auto cam_dir = Point3(-7, -5, 7);

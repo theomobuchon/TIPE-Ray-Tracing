@@ -34,7 +34,7 @@ bool AABB::hit(const Ray &r, Interval ray_t) const {
 
     for (int i = 0; i < 3; i++) {
         const Interval &axis = axis_interval(i);
-        const double adinv = 1./dir[i];
+        const float adinv = 1.f/dir[i];
 
         const auto t0 = (axis.min() - orig[i]) * adinv;
         const auto t1 = (axis.max() - orig[i]) * adinv;

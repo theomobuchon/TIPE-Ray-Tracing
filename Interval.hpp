@@ -8,26 +8,26 @@
 class Interval {
 public:
     Interval();
-    Interval(double min, double max);
+    Interval(float min, float max);
     Interval(const Interval &i1, const Interval &i2);
     Interval &operator=(const Interval &interval);
-    [[nodiscard]] Interval expand(double delta) const;
-    [[nodiscard]] double min() const;
-    [[nodiscard]] double max() const;
-    [[nodiscard]] bool contains(double value) const;
-    [[nodiscard]] bool surrounds(double value) const;
-    [[nodiscard]] double clamp(double value) const;
-    [[nodiscard]] double size() const;
-    [[nodiscard]] double center() const;
+    [[nodiscard]] Interval expand(float delta) const;
+    [[nodiscard]] float min() const;
+    [[nodiscard]] float max() const;
+    [[nodiscard]] bool contains(float value) const;
+    [[nodiscard]] bool surrounds(float value) const;
+    [[nodiscard]] float clamp(float value) const;
+    [[nodiscard]] float size() const;
+    [[nodiscard]] float center() const;
     static Interval merge(const Interval &i1, const Interval &i2);
-    void setMin(double min);
-    void setMax(double max);
+    void setMin(float min);
+    void setMax(float max);
 
     static const Interval empty, universe;
 
 protected:
-    double m_min;
-    double m_max;
+    float m_min;
+    float m_max;
 };
 
 #endif //TIPE_RAY_TRACING_INTERVAL_HPP

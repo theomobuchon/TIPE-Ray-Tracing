@@ -17,7 +17,7 @@ public:
     Point3 m_p;
     Vec3 m_normal;
     std::shared_ptr<Material> m_material;
-    double m_t;
+    float m_t;
     bool m_front_face;
 
     void set_sens_normal(const Ray &ray, const Vec3& normal_sortant);
