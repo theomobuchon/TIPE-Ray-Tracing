@@ -17,7 +17,7 @@ int main() {
     const auto start = chrono::high_resolution_clock::now();
 
     int out;
-    switch(0) {
+    switch(6) {
         case 0: out = lambertianExample(); break;
         case 1: out = dielectricExample(); break;
         case 2: out = metalExample(); break;
@@ -25,6 +25,7 @@ int main() {
         case 4: out = testLight(); break;
         case 5: out = empty_cornel_box(); break;
         case 6: out = test_mesh(); break;
+        case 7: out = lambertianCube(); break;
         default: out = test();
     }
 

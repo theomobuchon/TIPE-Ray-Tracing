@@ -38,11 +38,15 @@ string name_file(const Camera& cam, const string &im_title) {
 Color degradated_background(const Vec3 &ray_direction) {
     const Vec3 unit_direction = normalised(ray_direction);
     const float a = 0.5f*(unit_direction.y() + 1.0f);
-    return (1.0f-a)*Color(0, 1.0, 1.0) + a*Color(0.5, 0.7, 1.);
+    return (1.0f-a)*Color(0.8, 0.8, 0.8) + a*Color(0.5, 0.7, 1.);
 }
 
 Color white_background(const Vec3 &ray_direction) {
     return {1., 1., 1.};
+}
+
+std::function<Color(const Vec3 &ray_direction)> colored_background(const Color &color) {
+    return [color](const Vec3 &ray_direction) {return color;};
 }
 
 int lambertianExample() {
@@ -112,12 +116,12 @@ int metalExample() {
     world = Hittable_list(make_shared<BVH_node>(world.objects()));
 
     float im_ratio = 1.;
-    int im_width = 1024;
+    int im_width = 512;
     Point3 cam_center = {0., 0.5, -2.};
     auto cam_dir = Point3(0., 0., 1.);
     Camera cam(im_ratio, im_width, cam_center, cam_dir);
 
-    cam.samples_per_pixel = 100;
+    cam.samples_per_pixel = 50;
     cam.max_depth = 10;
 
     cam.v_fov = 60;
@@ -126,11 +130,11 @@ int metalExample() {
     cam.defocus_angle = 0.;
     cam.focus_dist = 10.;
 
-    cam.parallelism = false;
+    cam.parallelism = true;
 
     cam.background = degradated_background;
 
-    string im_title = "MetalExampleByFuzz(0.8-0.4-0.)vv";
+    string im_title = "MetalExampleByFuzz(0.8-0.4-0.)";
     string file_dir = "../images/";
     string file_name = name_file(cam, im_title);
     ofstream fout(file_dir + file_name);
@@ -236,15 +240,15 @@ int sphere_field_demo() {
     auto material3 = make_shared<Metal>(Color(0.7, 0.6, 0.5), 0.0);
     world.add(make_shared<Sphere>(Point3(4, 1, 0), 1.0, material3));
 
-    world = Hittable_list(make_shared<BVH_node>(world.objects()));
+    //world = Hittable_list(make_shared<BVH_node>(world.objects()));
 
     float im_ratio = 1.;
-    int im_width = 1024;
+    int im_width = 512;
     Point3 cam_center = {13, 2., 3.};
     auto cam_dir = Point3(-13., -2., -3.);
     Camera cam(im_ratio, im_width, cam_center, cam_dir);
 
-    cam.samples_per_pixel = 1000;
+    cam.samples_per_pixel = 100;
     cam.max_depth = 10;
 
     cam.v_fov = 20;
@@ -257,10 +261,10 @@ int sphere_field_demo() {
 
     cam.background = white_background;
 
-    string im_title = "Sphere_field_demo_newp";
+    string im_title = "Sphere_field_demo";
     string file_dir = "../images/";
     string file_name = name_file(cam, im_title);
-    ofstream fout(file_dir + file_name);
+    ofstream fout(file_dir + im_title + ".ppm");
     if (!fout) {cerr << "Erreur lors de l'ouverture du fichier !"<< endl; return 1;}
 
     Image image = cam.render(world);
@@ -369,6 +373,65 @@ int empty_cornel_box() {
     return 0;
 }
 
+int lambertianCube() {
+    auto world = Hittable_list();
+
+    // Materials
+    auto red = make_shared<Lambertian>(Color(0.65, 0.05, 0.05));
+    auto white = make_shared<Lambertian>(Color(0.73, 0.73, 0.73));
+    auto green = make_shared<Lambertian>(Color(0.12, 0.45, 0.15));
+    auto light = make_shared<Diffuse_light>(Color(1.0, 1.0, 1.0));
+
+    // Objects
+    world.add(make_shared<Rectangle>(Point3(555,0,0), Vec3(0,555,0), Vec3(0,0,555), green));
+    world.add(make_shared<Rectangle>(Point3(0,0,0), Vec3(0,555,0), Vec3(0,0,555), red));
+    world.add(make_shared<Rectangle>(Point3(400, 554, 409), Vec3(-235,0,0), Vec3(0,0,-250), light));
+    world.add(make_shared<Rectangle>(Point3(0,0,0), Vec3(555,0,0), Vec3(0,0,555), white));
+    world.add(make_shared<Rectangle>(Point3(555,555,555), Vec3(-555,0,0), Vec3(0,0,-555), white));
+    world.add(make_shared<Rectangle>(Point3(0,0,555), Vec3(555,0,0), Vec3(0,555,0), white));
+
+    auto blue = make_shared<Lambertian>(Color(0.17, 0.20, 0.57));
+    RNG rng;
+    rng.state = 764183099;
+    int ns = 10;
+    for (int i=0; i < ns; i++) {
+        world.add(make_shared<Sphere>(Point3::random(150, 400, rng), 3, blue));
+    }
+
+    //world = Hittable_list(make_shared<BVH_node>(world.objects()));
+
+    float im_ratio = 1.;
+    int im_width = 512;
+    Point3 cam_center = {278, 278, -800};
+    auto cam_dir = Point3(0., 0., 800);
+    Camera cam(im_ratio, im_width, cam_center, cam_dir);
+
+    cam.samples_per_pixel = 100;
+    cam.max_depth = 50;
+
+    cam.v_fov = 35;
+    cam.up = Vec3(0,1,0);
+
+    cam.defocus_angle = 0.;
+    cam.focus_dist = 10.;
+
+    cam.parallelism = false;
+
+    cam.background = colored_background(Color(0.5, 0.5, 0.5));
+
+    string im_title = "Cornell_box_b";
+    string file_dir = "../images/";
+    string file_name = name_file(cam, im_title);
+    ofstream fout(file_dir + file_name);
+    cout << file_dir + file_name << "\n";
+    if (!fout) {cerr << "Erreur lors de l'ouverture du fichier !"; return 1;}
+
+    Image image = cam.render(world);
+    image.write_result(fout);
+
+    return 0;
+}
+
 int test_mesh() {
     auto world = Hittable_list();
 
@@ -382,13 +445,13 @@ int test_mesh() {
     world.add(mesh.convert());
 
     cout << "Initialisation of the BVH structure" << endl;
-    world = Hittable_list(make_shared<BVH_node>(world.objects()));
+    //<world = Hittable_list(make_shared<BVH_node>(world.objects()));
 
     cout << "Setting up the camera..." << endl;
     float im_ratio = 1.;
     int im_width = 512;
-    Point3 cam_center = {7, 5, -7};
-    auto cam_dir = Point3(-7, -5, 7);
+    Point3 cam_center = {0, 6, 2};
+    auto cam_dir = Point3(0, -6, -2);
     Camera cam(im_ratio, im_width, cam_center, cam_dir);
 
     cam.samples_per_pixel = 100;
