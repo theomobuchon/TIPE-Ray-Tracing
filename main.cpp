@@ -25,6 +25,7 @@ int main() {
         case 4: out = testLight(); break;
         case 5: out = empty_cornel_box(); break;
         case 6: out = test_mesh(); break;
+        case 7: out = lambertianCube(); break;
         default: out = test();
     }
 

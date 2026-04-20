@@ -25,7 +25,7 @@ void Camera::initialize() {
 
     m_im_height = static_cast<int>((float)im_width / ratio);
     const auto theta = degrees_to_radians(v_fov);
-    const auto h = tan(theta / 2);
+    const auto h = tanf(theta / 2);
     const auto viewport_height = 2 * h * focus_dist;
     const auto viewport_width = viewport_height / ((float)m_im_height/static_cast<float>(im_width));
 
@@ -35,9 +35,9 @@ void Camera::initialize() {
 
     m_du_viewport = u_viewport / (float)im_width;
     m_dv_viewport = v_viewport / (float)m_im_height;
-    m_pix00 = origin_viewport + 0.5*m_du_viewport + 0.5*m_dv_viewport;
+    m_pix00 = origin_viewport + 0.5f*m_du_viewport + 0.5f*m_dv_viewport;
 
-    const auto defocus_radius = focus_dist * tan(degrees_to_radians(defocus_angle / 2));
+    const auto defocus_radius = focus_dist * tanf(degrees_to_radians(defocus_angle / 2));
     m_u_defocus_disk = defocus_radius * m_u;
     m_v_defocus_disk = defocus_radius * m_v;
 

@@ -4,7 +4,6 @@
 #include "MeshReader.hpp"
 #include <iostream>
 #include <sstream>
-
 #include "Raytracer.hpp"
 #include "Triangle.hpp"
 
