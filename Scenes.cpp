@@ -449,12 +449,12 @@ int test_mesh() {
 
     cout << "Setting up the camera..." << endl;
     float im_ratio = 1.;
-    int im_width = 256;
+    int im_width = 512;
     Point3 cam_center = {0, 6, -2};
     auto cam_dir = Point3(0, -6, 2);
     Camera cam(im_ratio, im_width, cam_center, cam_dir);
 
-    cam.samples_per_pixel = 10;
+    cam.samples_per_pixel = 100;
     cam.max_depth = 50;
 
     cam.v_fov = 20;
@@ -467,7 +467,7 @@ int test_mesh() {
 
     cam.background = degradated_background;
 
-    string im_title = "Test_meshww";
+    string im_title = "Test_mesh_king";
     string file_dir = "../images/";
     string file_name = name_file(cam, im_title);
     ofstream fout(file_dir + file_name);

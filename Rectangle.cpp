@@ -7,10 +7,10 @@
 
 Rectangle::Rectangle(const Point3 &origin, const Vec3 &u, const Vec3 &v, const std::shared_ptr<Material> &material): m_origin(origin), m_u(u), m_v(v), m_material(material) {
     m_normal = normalised(p_vect(u, v));
-    Point3 p0 = m_origin;
-    Point3 p1 = m_origin + m_u;
-    Point3 p2 = m_origin + m_v;
-    Point3 p3 = m_origin + m_u + m_v;
+    const Point3 p0 = m_origin;
+    const Point3 p1 = m_origin + m_u;
+    const Point3 p2 = m_origin + m_v;
+    const Point3 p3 = m_origin + m_u + m_v;
 
     Vec3 min_v(
         std::min({p0.x(), p1.x(), p2.x(), p3.x()}),
