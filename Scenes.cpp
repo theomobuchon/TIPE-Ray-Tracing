@@ -236,15 +236,15 @@ int sphere_field_demo() {
     auto material3 = make_shared<Metal>(Color(0.7, 0.6, 0.5), 0.0);
     world.add(make_shared<Sphere>(Point3(4, 1, 0), 1.0, material3));
 
-    world = Hittable_list(make_shared<BVH_node>(world.objects()));
+    //world = Hittable_list(make_shared<BVH_node>(world.objects()));
 
     float im_ratio = 1.;
-    int im_width = 1024;
+    int im_width = 512;
     Point3 cam_center = {13, 2., 3.};
     auto cam_dir = Point3(-13., -2., -3.);
     Camera cam(im_ratio, im_width, cam_center, cam_dir);
 
-    cam.samples_per_pixel = 1000;
+    cam.samples_per_pixel = 10;
     cam.max_depth = 10;
 
     cam.v_fov = 20;
@@ -257,7 +257,7 @@ int sphere_field_demo() {
 
     cam.background = white_background;
 
-    string im_title = "Sphere_field_demo_newp";
+    string im_title = "Sphere_field_demo_newpp";
     string file_dir = "../images/";
     string file_name = name_file(cam, im_title);
     ofstream fout(file_dir + file_name);
@@ -386,12 +386,12 @@ int test_mesh() {
 
     cout << "Setting up the camera..." << endl;
     float im_ratio = 1.;
-    int im_width = 512;
-    Point3 cam_center = {7, 5, -7};
-    auto cam_dir = Point3(-7, -5, 7);
+    int im_width = 256;
+    Point3 cam_center = {0, 6, -2};
+    auto cam_dir = Point3(0, -6, 2);
     Camera cam(im_ratio, im_width, cam_center, cam_dir);
 
-    cam.samples_per_pixel = 100;
+    cam.samples_per_pixel = 10;
     cam.max_depth = 50;
 
     cam.v_fov = 20;
@@ -404,7 +404,7 @@ int test_mesh() {
 
     cam.background = degradated_background;
 
-    string im_title = "Test_mesh";
+    string im_title = "Test_meshww";
     string file_dir = "../images/";
     string file_name = name_file(cam, im_title);
     ofstream fout(file_dir + file_name);

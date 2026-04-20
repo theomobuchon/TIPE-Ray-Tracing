@@ -9,7 +9,7 @@ Rectangle::Rectangle(const Point3 &origin, const Vec3 &u, const Vec3 &v, const s
     m_bbox = AABB(origin + m_normal * 0.001, origin + u + v - m_normal * 0.001);
 }
 
-bool Rectangle::hit(const Ray &ray, Interval int_valid, Hit_record &rec) const {
+bool Rectangle::hit(const Ray &ray, const Interval int_valid, Hit_record &rec) const {
     const Vec3 h = p_vect(ray.direction(), m_v);
     const float a = p_scal(m_u, h);
     if (a == 0) return false;

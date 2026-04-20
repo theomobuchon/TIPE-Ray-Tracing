@@ -34,21 +34,21 @@ bool AABB::hit(const Ray &r, Interval ray_t) const {
 
     for (int i = 0; i < 3; i++) {
         const Interval &axis = axis_interval(i);
+        if (fabs(dir[i]) < 1e-8f) {
+            if (orig[i] < axis.min() || orig[i] > axis.max())
+                return false;
+            continue;
+        }
         const float adinv = 1.f/dir[i];
 
-        const auto t0 = (axis.min() - orig[i]) * adinv;
-        const auto t1 = (axis.max() - orig[i]) * adinv;
+        auto t0 = (axis.min() - orig[i]) * adinv;
+        auto t1 = (axis.max() - orig[i]) * adinv;
 
-        if (t0 < t1) {
-            if (t0 > ray_t.min()) {ray_t.setMin(t0);}
-            if (t1 < ray_t.max()) {ray_t.setMax(t1);}
-        }
-        else {
-            if (t1 > ray_t.min()) {ray_t.setMin(t1);}
-            if (t0 < ray_t.max()) {ray_t.setMax(t0);}
-        }
+        if (adinv < 0.f) swap(t0, t1);
+        if (t0 > ray_t.min()) ray_t.setMin(t0);
+        if (t1 < ray_t.max()) ray_t.setMax(t1);
 
-        if (ray_t.max() <= ray_t.min()) {return false;}
+        if (ray_t.max() < ray_t.min()) {return false;}
     }
 
     return true;

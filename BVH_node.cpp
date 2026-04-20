@@ -81,6 +81,7 @@ BVH_node::BVH_node(
 
     // === CAS RÉCURSIF : Plus de 2 objets ===
 
+    bbox = bounding_box_of_objects(objects, start, end);
 
     int axis = 0;  // Par défaut X
 
@@ -105,26 +106,29 @@ BVH_node::BVH_node(
 
     left = make_shared<BVH_node>(objects, start, mid);
     right = make_shared<BVH_node>(objects, mid, end);
-    bbox = AABB(left->bounding_box(), right->bounding_box());
-
 }
 
 
 // === MÉTHODE HIT - PARCOURS DE L'ARBRE BVH ===
 
 
-bool BVH_node::hit(const Ray& ray, const Interval ray_t, Hit_record& rec) const {
+bool BVH_node::hit(const Ray &ray, Interval ray_t, Hit_record &rec) const {
     if (!bbox.hit(ray, ray_t)) {
         return false;
     }
+    Hit_record temp_rec;
+    const bool hit_left = left->hit(ray, ray_t, temp_rec);
 
-    const bool hit_left = left->hit(ray, ray_t, rec);
+    if (hit_left) {
+        rec = temp_rec;
+        ray_t.setMax(rec.m_t);
+    }
+    const bool hit_right = right->hit(ray, ray_t, temp_rec);
 
-    const Interval right_interval = hit_left
-        ? Interval(ray_t.min(), rec.m_t)
-        : ray_t;
-
-    const bool hit_right = right->hit(ray, right_interval, rec);
+    if (hit_right) {
+        rec = temp_rec;
+        return true;
+    }
 
     return hit_left || hit_right;
 }

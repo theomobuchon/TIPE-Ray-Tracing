@@ -16,7 +16,7 @@ public:
         : BVH_node(objects, 0, objects.size()) {}
 
     // Teste l'intersection avec un rayon
-    bool hit(const Ray& ray, Interval ray_t, Hit_record& rec) const override;
+    bool hit(const Ray &ray, Interval ray_t, Hit_record &rec) const override;
     
     // Retourne la boîte englobante de ce nœud
     [[nodiscard]] AABB bounding_box() const override;

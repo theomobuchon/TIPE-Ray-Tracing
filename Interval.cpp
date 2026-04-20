@@ -3,6 +3,9 @@
 //
 
 #include "Interval.hpp"
+
+#include <iostream>
+
 #include "Raytracer.hpp"
 
 const Interval Interval::empty = Interval(+infinite, -infinite);
@@ -13,7 +16,6 @@ Interval::Interval(): m_min(+infinite), m_max(-infinite) {
 }
 
 Interval::Interval(const float min, const float max) : m_min(min), m_max(max) {
-
 }
 
 Interval::Interval(const Interval &i1, const Interval &i2) {
