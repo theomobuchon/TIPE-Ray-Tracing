@@ -435,35 +435,35 @@ int lambertianCube() {
 int test_mesh() {
     auto world = Hittable_list();
 
-    auto ground_material = make_shared<Lambertian>(Color(0.5, 0.5, 0.5));
+    auto ground_material = make_shared<Lambertian>(Color(0, 0, 0));
     world.add(make_shared<Sphere>(Point3(0,-100,0), 100, ground_material));
 
-    auto green = make_shared<Lambertian>(Color(0.12, 0.45, 0.15));
+    auto green = make_shared<Lambertian>(Color(0.7, 0.7, 0.7));
 
     auto mesh = MeshReader("../meshs/king.obj", green);
     cout << "Conversion of the mesh to an Hittable_list" << endl;
     world.add(mesh.convert());
 
     cout << "Initialisation of the BVH structure" << endl;
-    world = Hittable_list(make_shared<BVH_node>(world.objects()));
+    //world = Hittable_list(make_shared<BVH_node>(world.objects()));
 
     cout << "Setting up the camera..." << endl;
     float im_ratio = 1.;
     int im_width = 512;
-    Point3 cam_center = {0, 6, -2};
-    auto cam_dir = Point3(0, -6, 2);
-    Camera cam(im_ratio, im_width, cam_center, cam_dir);
+    Point3 cam_center = {0, 6, 2}; // lucy 500 400 1000 king 0 6 2 thinker 0 1 5
+    auto look_point = Point3(0, 0, 0); // lucy 500 400 1000 king 0 0 0 thinker 0 0 0
+    Camera cam(im_ratio, im_width, cam_center, look_point - cam_center);
 
     cam.samples_per_pixel = 100;
     cam.max_depth = 50;
 
-    cam.v_fov = 20;
-    cam.up = Vec3(0,1,0);
+    cam.v_fov = 20; // lucy 120 king 20 thinker 20
+    cam.up = Vec3(0,1,0); // lucy 0 0 1 king 0 1 0 thinker 0 1 0
 
     cam.defocus_angle = 0.;
     cam.focus_dist = 10.;
 
-    cam.parallelism = true;
+    cam.parallelism = false;
 
     cam.background = degradated_background;
 

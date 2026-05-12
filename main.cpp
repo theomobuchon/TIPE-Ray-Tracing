@@ -30,8 +30,8 @@ int main() {
     }
 
     const auto end = chrono::high_resolution_clock::now();
-    const auto duration = chrono::duration_cast<chrono::seconds>(end - start);
-    cout << "Execution time: " << duration.count() << " seconds" << endl;
+    const auto duration = chrono::duration_cast<chrono::milliseconds>(end - start);
+    cout << "Execution time: " << duration.count() << " milliseconds" << endl;
     Beep(440, 2000);
 
     return out;

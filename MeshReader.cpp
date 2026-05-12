@@ -37,7 +37,7 @@ MeshReader::MeshReader(const std::string &source_file, const std::shared_ptr<Mat
                     ss >> som;
                     vector<string> vs = splitString(som, '/');
                     tr[i] = std::stoi(vs[0])-1;
-                    tr[3] = std::stoi(vs[2])-1;
+                    if (vs.size() > 1) tr[3] = std::stoi(vs[2])-1;
                 }
                 m_triangles.emplace_back(tr);
             }
