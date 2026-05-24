@@ -415,7 +415,7 @@ int lambertianCube() {
     cam.defocus_angle = 0.;
     cam.focus_dist = 10.;
 
-    cam.parallelism = false;
+    cam.parallelism = true;
 
     cam.background = colored_background(Color(0.5, 0.5, 0.5));
 
@@ -474,6 +474,57 @@ int test_mesh() {
     if (!fout) {cerr << "Erreur lors de l'ouverture du fichier !"; return 1;}
 
     cout << "Rendering phase" << endl;
+    Image image = cam.render(world);
+    image.write_result(fout);
+
+    return 0;
+}
+
+int lambertianCube(int ns, bool BVH, Camera &cam, bool para) {
+    auto world = Hittable_list();
+
+    // Materials
+    auto red = make_shared<Lambertian>(Color(0.65, 0.05, 0.05));
+    auto white = make_shared<Lambertian>(Color(0.73, 0.73, 0.73));
+    auto green = make_shared<Lambertian>(Color(0.12, 0.45, 0.15));
+    auto light = make_shared<Diffuse_light>(Color(1.0, 1.0, 1.0));
+
+    // Objects
+    world.add(make_shared<Rectangle>(Point3(555,0,0), Vec3(0,555,0), Vec3(0,0,555), green));
+    world.add(make_shared<Rectangle>(Point3(0,0,0), Vec3(0,555,0), Vec3(0,0,555), red));
+    world.add(make_shared<Rectangle>(Point3(400, 554, 409), Vec3(-235,0,0), Vec3(0,0,-250), light));
+    world.add(make_shared<Rectangle>(Point3(0,0,0), Vec3(555,0,0), Vec3(0,0,555), white));
+    world.add(make_shared<Rectangle>(Point3(555,555,555), Vec3(-555,0,0), Vec3(0,0,-555), white));
+    world.add(make_shared<Rectangle>(Point3(0,0,555), Vec3(555,0,0), Vec3(0,555,0), white));
+
+    auto blue = make_shared<Lambertian>(Color(0.17, 0.20, 0.57));
+    RNG rng;
+    rng.state = 764183099;
+    for (int i=0; i < ns; i++) {
+        world.add(make_shared<Sphere>(Point3::random(150, 400, rng), 3, blue));
+    }
+
+    if (BVH) world = Hittable_list(make_shared<BVH_node>(world.objects()));
+
+    cam.samples_per_pixel = 100;
+    cam.max_depth = 50;
+
+    cam.v_fov = 35;
+    cam.up = Vec3(0,1,0);
+
+    cam.defocus_angle = 0.;
+    cam.focus_dist = 10.;
+
+    cam.parallelism = para;
+
+    cam.background = colored_background(Color(0.5, 0.5, 0.5));
+
+    string im_title = "Cornell_box_b";
+    string file_dir = "../images/";
+    string file_name = name_file(cam, im_title);
+    ofstream fout(file_dir + file_name);
+    if (!fout) {cerr << "Erreur lors de l'ouverture du fichier !"; return 1;}
+
     Image image = cam.render(world);
     image.write_result(fout);
 

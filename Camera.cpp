@@ -91,7 +91,7 @@ void Camera::partial_render(Image &image, const Hittable &world, const int start
             {
                 lock_guard<mutex> lock(mtx);
                 image.write_color(i, j, color / (float)samples_per_pixel);
-                show_progression();
+                //show_progression();
             }
 
         }

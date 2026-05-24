@@ -21,5 +21,6 @@ int testLight();
 int empty_cornel_box();
 int test_mesh();
 int lambertianCube();
+int lambertianCube(int ns, bool BVH, Camera &cam, bool para);
 
 #endif //TIPE_RAY_TRACING_SCENES_HPP
