@@ -33,7 +33,7 @@ void send_data(string path, vector<string> data) {
 
 int test_battery() {
     vector<string> battery;
-    int nbs[15] = {1, 10, 20, 30, 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000};
+    int nbs[28] = {1500, 2000, 2500, 3000, 3500, 4000, 4500, 5000, 5500, 6000, 6500, 7000, 7500, 8000, 8500, 9000, 9500, 10000, 11000, 12000, 13000, 14000, 15000, 16000, 17000, 18000, 19000, 20000};
     for (int nb: nbs) {
         for (int i=2; i < 3; i++) {
             cout << nb << endl;
@@ -44,8 +44,8 @@ int test_battery() {
             Point3 cam_center = {278, 278, -800};
             auto cam_dir = Point3(0., 0., 800);
             Camera cam(im_ratio, im_width, cam_center, cam_dir);
-            bool BVH = false;
-            bool para = false;
+            bool BVH = true;
+            bool para = true;
 
             lambertianCube(nb, BVH, cam, para);
 
@@ -95,7 +95,7 @@ int classic(int c) {
 }
 
 int main() {
-    bool est_classic = false;
-    if (est_classic) return classic(7);
+    bool est_classic = true;
+    if (est_classic) return classic(0);
     else return test_battery();
 }

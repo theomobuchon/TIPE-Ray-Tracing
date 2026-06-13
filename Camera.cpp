@@ -75,7 +75,6 @@ Ray Camera::getRay(const int x, const int y, RNG &rng) const {
 
 
 void Camera::partial_render(Image &image, const Hittable &world, const int start_i, const int end_i, const int start_j, const int end_j) const {
-    // parallel loop collapse(2)
     for (int j = start_j; j < end_j; j++) {
         for (int i = start_i; i < end_i; i++) {
             RNG rng;
@@ -91,7 +90,7 @@ void Camera::partial_render(Image &image, const Hittable &world, const int start
             {
                 lock_guard<mutex> lock(mtx);
                 image.write_color(i, j, color / (float)samples_per_pixel);
-                //show_progression();
+                show_progression();
             }
 
         }
